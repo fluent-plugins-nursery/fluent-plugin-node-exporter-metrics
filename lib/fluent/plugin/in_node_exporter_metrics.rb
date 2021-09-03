@@ -15,6 +15,7 @@
 
 require "cmetrics"
 require "fluent/plugin/input"
+require "fluent/plugin/node_exporter_cpu_collector"
 
 module Fluent
   module Plugin
@@ -29,7 +30,8 @@ module Fluent
       config_param :procfs_path, :string, default: "/proc"
       desc "Path to file-system to collect system metrics"
       config_param :sysfs_path, :string, default: "/sys"
-
+      desc "Tag string"
+      config_param :tag, :string, default: nil
       desc "Enable cpu collector"
       config_param :cpu, :bool, default: true
       desc "Enable cpu collector"
@@ -53,6 +55,42 @@ module Fluent
       desc "Enable vmstat collector"
       config_param :vmstat, :bool, default: true
 
+      def configure(conf)
+        super
+        @collectors = []
+        config = {
+          procfs_path: @procfs_path,
+          sysfs_path: @sysfs_path
+        }
+        @collectors << NodeExporterCpuMetricsCollector.new(config) if @cpu
+      end
+
+      def start
+        super
+        timer_execute(:execute_node_exporter_metrics, @scrape_interval, &method(:refresh_watchers))
+      end
+
+      def refresh_watchers
+        begin
+          wired_buffer = ""
+          @collectors.each do |collector|
+            #wired_buffer = collector.cmetrics.first.to_msgpack
+            collector.cmetrics.each do |cmetric|
+              wired_buffer << cmetric.to_msgpack
+            end
+          end
+          record = {
+            metrics: wired_buffer
+          }
+          es = OneEventStream.new(Fluent::EventTime.now, record)
+          router.emit_stream(@tag, es)
+        rescue
+          
+        end
+      end
+
+      def shutdown
+      end
     end
   end
 end
