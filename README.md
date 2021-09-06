@@ -36,6 +36,11 @@ $ fluent-plugin-config-format input node-exporter-metrics
 
 You can copy and paste generated documents here.
 
+# Documentation
+
+* [CPU collector](docs/cpu.md)
+
+
 ## Copyright
 
 * Copyright(c) 2021- Kentaro Hayashi
