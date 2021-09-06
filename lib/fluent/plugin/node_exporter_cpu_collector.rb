@@ -116,7 +116,12 @@ module Fluent
       end
 
       def cmetrics
-        [@core_throttles_total, @package_throttles_total, @seconds_total, @guest_seconds_total].compact
+        {
+          core_throttles_total: @core_throttles_total,
+          package_throttles_total: @package_throttles_total,
+          seconds_total: @seconds_total,
+          guest_seconds_total: @guest_seconds_total
+        }.compact
       end
     end
   end

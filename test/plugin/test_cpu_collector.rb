@@ -34,7 +34,7 @@ class NodeExporterCpuColectorTest < Test::Unit::TestCase
       collector = Fluent::Plugin::NodeExporterCpuMetricsCollector.new(config)
       collector.run
       # CPU0/1 thermal throttle
-      core_throttles_total = collector.cmetrics.first
+      core_throttles_total = collector.cmetrics[:core_throttles_total]
       assert_equal([1.0, 2.0],
                    [core_throttles_total.val(["0", "0"]), core_throttles_total.val(["1", "0"])])
     end
@@ -48,8 +48,8 @@ class NodeExporterCpuColectorTest < Test::Unit::TestCase
       collector = Fluent::Plugin::NodeExporterCpuMetricsCollector.new(config)
       stub(Etc).sysconf { 1000 }
       collector.run
-      seconds_total = collector.cmetrics[2]
-      guest_seconds_total = collector.cmetrics[3]
+      seconds_total = collector.cmetrics[:seconds_total]
+      guest_seconds_total = collector.cmetrics[:guest_seconds_total]
       assert_equal([4.0, 5.0, 6.0, 2.0, 7.0, 8.0, 3.0, 1.0, 9.0, 10.0],
                    [seconds_total.val(["0", "idle"]),
                     seconds_total.val(["0", "iowait"]),
