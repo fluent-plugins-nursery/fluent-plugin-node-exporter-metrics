@@ -93,13 +93,11 @@ module Fluent
       def cpu_stat_update
         stat_path = File.join(@procfs_path, "stat")
         File.readlines(stat_path).each do |line|
-          p line
           if line.start_with?("cpu ")
             # Ignore CPU total
             next
           elsif line.start_with?("cpu")
             user_hz = Etc.sysconf(Etc::SC_CLK_TCK)
-            p user_hz
             line.match(STAT_CPU_PATTERN) do |m|
               @seconds_total.set(m[:idle].to_f / user_hz, [m[:cpuid], "idle"])
               @seconds_total.set(m[:iowait].to_f / user_hz, [m[:cpuid], "iowait"])
