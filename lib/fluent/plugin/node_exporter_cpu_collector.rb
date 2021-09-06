@@ -14,6 +14,7 @@
 # limitations under the License.
 
 require "cmetrics"
+require "etc"
 require "fluent/plugin/input"
 require "fluent/plugin/node_exporter_collector"
 
@@ -87,7 +88,33 @@ module Fluent
         end
       end
 
+      STAT_CPU_PATTERN = /^cpu(?<cpuid>\d+)\s(?<user>\d+)\s(?<nice>\d+)\s(?<system>\d+)\s(?<idle>\d+)\s(?<iowait>\d+)\s(?<irq>\d+)\s(?<softirq>\d+)\s(?<steal>\d+)\s(?<guest>\d+)\s(?<guest_nice>\d+)/
+
       def cpu_stat_update
+        stat_path = File.join(@procfs_path, "stat")
+        File.readlines(stat_path).each do |line|
+          p line
+          if line.start_with?("cpu ")
+            # Ignore CPU total
+            next
+          elsif line.start_with?("cpu")
+            user_hz = Etc.sysconf(Etc::SC_CLK_TCK)
+            p user_hz
+            line.match(STAT_CPU_PATTERN) do |m|
+              @seconds_total.set(m[:idle].to_f / user_hz, [m[:cpuid], "idle"])
+              @seconds_total.set(m[:iowait].to_f / user_hz, [m[:cpuid], "iowait"])
+              @seconds_total.set(m[:irq].to_f / user_hz, [m[:cpuid], "irq"])
+              @seconds_total.set(m[:nice].to_f / user_hz, [m[:cpuid], "nice"])
+              @seconds_total.set(m[:softirq].to_f / user_hz, [m[:cpuid], "softirq"])
+              @seconds_total.set(m[:steal].to_f / user_hz, [m[:cpuid], "steal"])
+              @seconds_total.set(m[:system].to_f / user_hz, [m[:cpuid], "system"])
+              @seconds_total.set(m[:user].to_f / user_hz, [m[:cpuid], "user"])
+
+              @guest_seconds_total.set(m[:guest].to_f / user_hz, [m[:cpuid], "user"])
+              @guest_seconds_total.set(m[:guest_nice].to_f / user_hz, [m[:cpuid], "nice"])
+            end
+          end
+        end
       end
 
       def cmetrics

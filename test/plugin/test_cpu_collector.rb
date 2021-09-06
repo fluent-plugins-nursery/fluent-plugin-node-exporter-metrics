@@ -25,7 +25,7 @@ class NodeExporterCpuColectorTest < Test::Unit::TestCase
   end
 
   sub_test_case "cpu_thermal_throttle" do
-    def test_cpu0_thermal_throttle
+    def test_cpu_thermal_throttle
       config = {
         scpape_interval: 1,
         procfs_path: fixture_procfs_root("cpu", "with_thermal_throttle"),
@@ -37,6 +37,31 @@ class NodeExporterCpuColectorTest < Test::Unit::TestCase
       core_throttles_total = collector.cmetrics.first
       assert_equal([1.0, 2.0],
                    [core_throttles_total.val(["0", "0"]), core_throttles_total.val(["1", "0"])])
+    end
+
+    def test_cpu_stat
+      config = {
+        scpape_interval: 1,
+        procfs_path: fixture_procfs_root("cpu", "with_thermal_throttle"),
+        sysfs_path: fixture_sysfs_root("cpu", "with_thermal_throttle")
+      }
+      collector = Fluent::Plugin::NodeExporterCpuMetricsCollector.new(config)
+      stub(Etc).sysconf { 1000 }
+      collector.run
+      seconds_total = collector.cmetrics[2]
+      guest_seconds_total = collector.cmetrics[3]
+      assert_equal([4.0, 5.0, 6.0, 2.0, 7.0, 8.0, 3.0, 1.0, 9.0, 10.0],
+                   [seconds_total.val(["0", "idle"]),
+                    seconds_total.val(["0", "iowait"]),
+                    seconds_total.val(["0", "irq"]),
+                    seconds_total.val(["0", "nice"]),
+                    seconds_total.val(["0", "softirq"]),
+                    seconds_total.val(["0", "steal"]),
+                    seconds_total.val(["0", "system"]),
+                    seconds_total.val(["0", "user"]),
+                    guest_seconds_total.val(["0", "user"]),
+                    guest_seconds_total.val(["0", "nice"]),
+                   ])
     end
   end
 end
