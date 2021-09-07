@@ -14,7 +14,6 @@
 # limitations under the License.
 
 require "cmetrics"
-require "etc"
 require "fluent/plugin/input"
 require "fluent/plugin/node_exporter_collector"
 
