@@ -21,42 +21,44 @@ require "fluent/plugin/node_exporter_collector"
 
 module Fluent
   module Plugin
-    class NodeExporterUnameMetricsCollector < NodeExporterMetricsCollector
-      def initialize(config={})
-        super(config)
+    module NodeExporter
+      class UnameMetricsCollector < MetricsCollector
+        def initialize(config={})
+          super(config)
 
-        @gauge = CMetrics::Gauge.new
-        @gauge.create("node", "uname", "info",
-                      "Labeled system information as provided by the uname system call.",
-                      ["sysname", "release", "version", "machine", "nodename", "domainname"])
-      end
+          @gauge = CMetrics::Gauge.new
+          @gauge.create("node", "uname", "info",
+                        "Labeled system information as provided by the uname system call.",
+                        ["sysname", "release", "version", "machine", "nodename", "domainname"])
+        end
 
-      def run
-        uname_update
-      end
+        def run
+          uname_update
+        end
 
-      def uname_update
-        # Etc.uname returns at least sysname,release,version,machine,nodename
-        # but it is not guaranteed to return domainname.
-        domainname = if Etc.uname.has_key?(:domainname)
-                       Etc.uname[:domainname]
-                     else
-                       "(none)"
-                     end
-        # Use 1 explicitly for default gauge value
-        @gauge.set(1, [
-                     Etc.uname[:sysname],
-                     Etc.uname[:release],
-                     Etc.uname[:version],
-                     Etc.uname[:machine],
-                     Etc.uname[:nodename],
-                     domainname])
-      end
+        def uname_update
+          # Etc.uname returns at least sysname,release,version,machine,nodename
+          # but it is not guaranteed to return domainname.
+          domainname = if Etc.uname.has_key?(:domainname)
+                         Etc.uname[:domainname]
+                       else
+                         "(none)"
+                       end
+          # Use 1 explicitly for default gauge value
+          @gauge.set(1, [
+                       Etc.uname[:sysname],
+                       Etc.uname[:release],
+                       Etc.uname[:version],
+                       Etc.uname[:machine],
+                       Etc.uname[:nodename],
+                       domainname])
+        end
 
-      def cmetrics
-        {
-          info: @gauge
-        }
+        def cmetrics
+          {
+            info: @gauge
+          }
+        end
       end
     end
   end

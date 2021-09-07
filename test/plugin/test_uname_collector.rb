@@ -22,7 +22,7 @@ class NodeExporterTimeColectorTest < Test::Unit::TestCase
     }
 
     def test_with_domainmame
-      collector = Fluent::Plugin::NodeExporterUnameMetricsCollector.new
+      collector = Fluent::Plugin::NodeExporter::UnameMetricsCollector.new
       stub(Etc).uname { WITH_DOMAINNAME }
       collector.run
       info = collector.cmetrics[:info]
@@ -30,7 +30,7 @@ class NodeExporterTimeColectorTest < Test::Unit::TestCase
     end
 
     def test_without_domainmame
-      collector = Fluent::Plugin::NodeExporterUnameMetricsCollector.new
+      collector = Fluent::Plugin::NodeExporter::UnameMetricsCollector.new
       stub(Etc).uname { WITHOUT_DOMAINNAME }
       collector.run
       info = collector.cmetrics[:info]

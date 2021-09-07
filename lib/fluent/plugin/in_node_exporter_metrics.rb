@@ -62,7 +62,7 @@ module Fluent
           procfs_path: @procfs_path,
           sysfs_path: @sysfs_path
         }
-        @collectors << NodeExporterCpuMetricsCollector.new(config) if @cpu
+        @collectors << NodeExporter::CpuMetricsCollector.new(config) if @cpu
       end
 
       def start

@@ -19,43 +19,45 @@ require "fluent/plugin/node_exporter_collector"
 
 module Fluent
   module Plugin
-    class NodeExporterLoadavgMetricsCollector < NodeExporterMetricsCollector
-      def initialize(config={})
-        super(config)
+    module NodeExporter
+      class LoadavgMetricsCollector < MetricsCollector
+        def initialize(config={})
+          super(config)
 
-        @load1 = CMetrics::Gauge.new
-        @load1.create("node", "", "load1", "1m load average.")
+          @load1 = CMetrics::Gauge.new
+          @load1.create("node", "", "load1", "1m load average.")
 
-        @load5 = CMetrics::Gauge.new
-        @load5.create("node", "", "load5", "5m load average.")
+          @load5 = CMetrics::Gauge.new
+          @load5.create("node", "", "load5", "5m load average.")
 
-        @load15 = CMetrics::Gauge.new
-        @load15.create("node", "", "load1", "15m load average.")
-      end
-
-      def run
-        loadavg_update
-      end
-
-      def loadavg_update
-        loadavg_path = File.join(@procfs_path, "/loadavg")
-        # Use 1 explicitly for default gauge value
-        fields = File.read(loadavg_path).split
-        unless fields.size == 5
-          $log.warn("invalid number of fields <#{loadavg_path}>: <#{fields.size}>")
-          return
+          @load15 = CMetrics::Gauge.new
+          @load15.create("node", "", "load1", "15m load average.")
         end
-        @load1.set(fields[0].to_f)
-        @load5.set(fields[1].to_f)
-        @load15.set(fields[2].to_f)
-      end
 
-      def cmetrics
-        {
-          loadavg1: @load1,
-          loadavg5: @load5,
-          loadavg15: @load15
-        }
+        def run
+          loadavg_update
+        end
+
+        def loadavg_update
+          loadavg_path = File.join(@procfs_path, "/loadavg")
+          # Use 1 explicitly for default gauge value
+          fields = File.read(loadavg_path).split
+          unless fields.size == 5
+            $log.warn("invalid number of fields <#{loadavg_path}>: <#{fields.size}>")
+            return
+          end
+          @load1.set(fields[0].to_f)
+          @load5.set(fields[1].to_f)
+          @load15.set(fields[2].to_f)
+        end
+
+        def cmetrics
+          {
+            loadavg1: @load1,
+            loadavg5: @load5,
+            loadavg15: @load15
+          }
+        end
       end
     end
   end

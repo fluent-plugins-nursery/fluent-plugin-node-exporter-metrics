@@ -21,39 +21,41 @@ require "fluent/plugin/node_exporter_collector"
 
 module Fluent
   module Plugin
-    class NodeExporterFilefdMetricsCollector < NodeExporterMetricsCollector
-      def initialize(config={})
-        super(config)
+    module NodeExporter
+      class FilefdMetricsCollector < MetricsCollector
+        def initialize(config={})
+          super(config)
 
-        @allocated = CMetrics::Gauge.new
-        @allocated.create("node", "filefd", "allocated", "File descriptor statistics: allocated.")
+          @allocated = CMetrics::Gauge.new
+          @allocated.create("node", "filefd", "allocated", "File descriptor statistics: allocated.")
 
-        @maximum = CMetrics::Gauge.new
-        @maximum.create("node", "filefd", "maximum", "File descriptor statistics: maximum.")
-      end
-
-      def run
-        filefd_update
-      end
-
-      def filefd_update
-        # Etc.uname returns at least sysname,release,version,machine,nodename
-        # but it is not guaranteed to return domainname.
-        file_nr_path = File.join(@procfs_path, "/sys/fs/file-nr")
-        entry = File.read(file_nr_path).split
-        unless entry.size == 3
-          $log.warn("invalid number of field <#{file_nr_path}>: #{entry.size}")
-          return
+          @maximum = CMetrics::Gauge.new
+          @maximum.create("node", "filefd", "maximum", "File descriptor statistics: maximum.")
         end
-        @allocated.set(entry.first.to_f)
-        @maximum.set(entry.last.to_f)
-      end
 
-      def cmetrics
-        {
-          filefd_allocated: @allocated,
-          filefd_maximum: @maximum
-        }
+        def run
+          filefd_update
+        end
+
+        def filefd_update
+          # Etc.uname returns at least sysname,release,version,machine,nodename
+          # but it is not guaranteed to return domainname.
+          file_nr_path = File.join(@procfs_path, "/sys/fs/file-nr")
+          entry = File.read(file_nr_path).split
+          unless entry.size == 3
+            $log.warn("invalid number of field <#{file_nr_path}>: #{entry.size}")
+            return
+          end
+          @allocated.set(entry.first.to_f)
+          @maximum.set(entry.last.to_f)
+        end
+
+        def cmetrics
+          {
+            filefd_allocated: @allocated,
+            filefd_maximum: @maximum
+          }
+        end
       end
     end
   end

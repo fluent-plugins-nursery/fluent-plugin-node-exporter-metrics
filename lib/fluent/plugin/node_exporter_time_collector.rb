@@ -20,29 +20,31 @@ require "fluent/plugin/node_exporter_collector"
 
 module Fluent
   module Plugin
-    class NodeExporterTimeMetricsCollector < NodeExporterMetricsCollector
-      def initialize(config={})
-        super(config)
+    module NodeExporter
+      class TimeMetricsCollector < MetricsCollector
+        def initialize(config={})
+          super(config)
 
-        @gauge = CMetrics::Gauge.new
-        @gauge.create("node", "", "time_seconds",
-                      "System time in seconds since epoch (1970).")
-      end
+          @gauge = CMetrics::Gauge.new
+          @gauge.create("node", "", "time_seconds",
+                        "System time in seconds since epoch (1970).")
+        end
 
-      def run
-        time_update
-      end
+        def run
+          time_update
+        end
 
-      def time_update
-        current_time = Fluent::EventTime.now
-        value = current_time.to_i / 1e9
-        @gauge.set(value)
-      end
+        def time_update
+          current_time = Fluent::EventTime.now
+          value = current_time.to_i / 1e9
+          @gauge.set(value)
+        end
 
-      def cmetrics
-        {
-          time_seconds: @gauge
-        }
+        def cmetrics
+          {
+            time_seconds: @gauge
+          }
+        end
       end
     end
   end

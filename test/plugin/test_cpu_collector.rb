@@ -31,7 +31,7 @@ class NodeExporterCpuColectorTest < Test::Unit::TestCase
         procfs_path: fixture_procfs_root("cpu", "with_thermal_throttle"),
         sysfs_path: fixture_sysfs_root("cpu", "with_thermal_throttle")
       }
-      collector = Fluent::Plugin::NodeExporterCpuMetricsCollector.new(config)
+      collector = Fluent::Plugin::NodeExporter::CpuMetricsCollector.new(config)
       collector.run
       # CPU0/1 thermal throttle
       core_throttles_total = collector.cmetrics[:core_throttles_total]
@@ -45,7 +45,7 @@ class NodeExporterCpuColectorTest < Test::Unit::TestCase
         procfs_path: fixture_procfs_root("cpu", "with_thermal_throttle"),
         sysfs_path: fixture_sysfs_root("cpu", "with_thermal_throttle")
       }
-      collector = Fluent::Plugin::NodeExporterCpuMetricsCollector.new(config)
+      collector = Fluent::Plugin::NodeExporter::CpuMetricsCollector.new(config)
       stub(Etc).sysconf { 1000 }
       collector.run
       seconds_total = collector.cmetrics[:seconds_total]

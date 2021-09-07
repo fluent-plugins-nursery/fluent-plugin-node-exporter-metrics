@@ -9,7 +9,7 @@ class NodeExporterTimeColectorTest < Test::Unit::TestCase
       config = {
         procfs_path: fixture_procfs_root("filefd", "invalid_fields")
       }
-      collector = Fluent::Plugin::NodeExporterFilefdMetricsCollector.new(config)
+      collector = Fluent::Plugin::NodeExporter::FilefdMetricsCollector.new(config)
       collector.run
       allocated = collector.cmetrics[:filefd_allocated]
       maximum = collector.cmetrics[:filefd_maximum]
@@ -21,7 +21,7 @@ class NodeExporterTimeColectorTest < Test::Unit::TestCase
       config = {
         procfs_path: fixture_procfs_root("filefd", "valid_fields")
       }
-      collector = Fluent::Plugin::NodeExporterFilefdMetricsCollector.new(config)
+      collector = Fluent::Plugin::NodeExporter::FilefdMetricsCollector.new(config)
       collector.run
       allocated = collector.cmetrics[:filefd_allocated]
       maximum = collector.cmetrics[:filefd_maximum]

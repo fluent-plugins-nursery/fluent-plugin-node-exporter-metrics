@@ -5,7 +5,7 @@ require "fluent/plugin/node_exporter_time_collector"
 class NodeExporterTimeColectorTest < Test::Unit::TestCase
   sub_test_case "time_seconds" do
     def test_time_now
-      collector = Fluent::Plugin::NodeExporterTimeMetricsCollector.new
+      collector = Fluent::Plugin::NodeExporter::TimeMetricsCollector.new
       stub(Fluent::EventTime).now { Fluent::EventTime.new(1e9) }
       collector.run
       time_seconds = collector.cmetrics[:time_seconds]

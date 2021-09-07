@@ -9,7 +9,7 @@ class NodeExporterTimeColectorTest < Test::Unit::TestCase
       config = {
         procfs_path: fixture_procfs_root("loadavg", "invalid_fields")
       }
-      collector = Fluent::Plugin::NodeExporterLoadavgMetricsCollector.new(config)
+      collector = Fluent::Plugin::NodeExporter::LoadavgMetricsCollector.new(config)
       collector.run
       loadavg1 = collector.cmetrics[:loadavg1]
       loadavg5 = collector.cmetrics[:loadavg5]
@@ -22,7 +22,7 @@ class NodeExporterTimeColectorTest < Test::Unit::TestCase
       config = {
         procfs_path: fixture_procfs_root("loadavg", "valid_fields")
       }
-      collector = Fluent::Plugin::NodeExporterLoadavgMetricsCollector.new(config)
+      collector = Fluent::Plugin::NodeExporter::LoadavgMetricsCollector.new(config)
       collector.run
       loadavg1 = collector.cmetrics[:loadavg1]
       loadavg5 = collector.cmetrics[:loadavg5]

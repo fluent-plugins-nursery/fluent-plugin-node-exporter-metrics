@@ -18,25 +18,27 @@ require "fluent/plugin/input"
 
 module Fluent
   module Plugin
-    class NodeExporterMetricsCollector
-      def initialize(config={})
-        @scrape_interval = config[:scrape_interval] || 5
-        @procfs_path = config[:procfs_path] || "/proc"
-        @sysfs_path = config[:sysfs_path] || "/sys"
-      end
+    module NodeExporter
+      class MetricsCollector
+        def initialize(config={})
+          @scrape_interval = config[:scrape_interval] || 5
+          @procfs_path = config[:procfs_path] || "/proc"
+          @sysfs_path = config[:sysfs_path] || "/sys"
+        end
 
-      def scan_sysfs_path(pattern)
-        Dir.glob(File.join(@sysfs_path, pattern)).sort_by do |a, b|
-          if a and b
-            File.basename(a).delete("a-z").to_i <=> File.basename(b).delete("a-z").to_i
-          else
-            0
+        def scan_sysfs_path(pattern)
+          Dir.glob(File.join(@sysfs_path, pattern)).sort_by do |a, b|
+            if a and b
+              File.basename(a).delete("a-z").to_i <=> File.basename(b).delete("a-z").to_i
+            else
+              0
+            end
           end
         end
-      end
 
-      def cmetrics
-        raise NotImplementedError
+        def cmetrics
+          raise NotImplementedError
+        end
       end
     end
   end
