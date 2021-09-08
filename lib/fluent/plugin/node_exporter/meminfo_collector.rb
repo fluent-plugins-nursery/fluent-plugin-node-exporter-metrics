@@ -29,20 +29,26 @@ module Fluent
         end
 
         def run
-          vmstat_update
+          meminfo_update
         end
 
-        def vmstat_update
-          vmstat_path = File.join(@procfs_path, "vmstat")
-          File.readlines(vmstat_path).each do |line|
-            entry, value, _ = line.split
-            if VMSTAT_ENTRIES_REGEX.match?(line)
-              key, value = line.split(' ', 2)
-              @untyped = CMetrics::Untyped.new
-              @untyped.create("node", "vmstat", key, "#{vmstat_path} information field #{key}.")
-              @untyped.set(value.to_f)
-              @metrics[key] = @untyped
+        def meminfo_update
+          meminfo_path = File.join(@procfs_path, "meminfo")
+          File.readlines(meminfo_path).each do |line|
+            name, value, unit = line.split
+            name.delete!(":")
+            if name.end_with?("(anon)") or name.end_with?("(file)")
+              name.sub!(/\((anon)\)|\((file)\)/, "_\\1\\2")
             end
+            if unit
+              name << "_bytes"
+              value = value.to_f * 1024
+            end
+            metric_name = "node_memory_#{name}"
+            @gauge = CMetrics::Gauge.new
+            @gauge.create("node", "memory", name, "#{name}.")
+            @gauge.set(value.to_f)
+            @metrics[metric_name] = @gauge
           end
         end
 
