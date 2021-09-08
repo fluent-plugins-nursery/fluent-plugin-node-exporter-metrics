@@ -2,7 +2,7 @@ require "helper"
 require "fluent/plugin/in_node_exporter_metrics"
 require "fluent/plugin/node_exporter/meminfo_collector"
 
-class NodeExporterMeminfoColectorTest < Test::Unit::TestCase
+class MeminfoColectorTest < Test::Unit::TestCase
   sub_test_case "metric name" do
 
     def parse(input)

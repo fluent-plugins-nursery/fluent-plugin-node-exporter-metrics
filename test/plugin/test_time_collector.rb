@@ -2,7 +2,7 @@ require "helper"
 require "fluent/plugin/in_node_exporter_metrics"
 require "fluent/plugin/node_exporter/time_collector"
 
-class NodeExporterTimeColectorTest < Test::Unit::TestCase
+class TimeColectorTest < Test::Unit::TestCase
   sub_test_case "time_seconds" do
     def test_time_now
       collector = Fluent::Plugin::NodeExporter::TimeMetricsCollector.new

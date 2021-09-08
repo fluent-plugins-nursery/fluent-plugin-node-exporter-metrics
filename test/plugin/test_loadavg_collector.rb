@@ -2,7 +2,7 @@ require "helper"
 require "fluent/plugin/in_node_exporter_metrics"
 require "fluent/plugin/node_exporter/loadavg_collector"
 
-class NodeExporterLoadavgColectorTest < Test::Unit::TestCase
+class LoadavgColectorTest < Test::Unit::TestCase
   sub_test_case "loadavg" do
 
     def parse(input)

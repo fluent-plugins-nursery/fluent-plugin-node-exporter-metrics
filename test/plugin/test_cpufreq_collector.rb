@@ -2,7 +2,7 @@ require "helper"
 require "fluent/plugin/in_node_exporter_metrics"
 require "fluent/plugin/node_exporter/cpufreq_collector"
 
-class NodeExporterCpufreqColectorTest < Test::Unit::TestCase
+class CpufreqColectorTest < Test::Unit::TestCase
   setup do
     Fluent::Test.setup
     @capability = Fluent::Capability.new

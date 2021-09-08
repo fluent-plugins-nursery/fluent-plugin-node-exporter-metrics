@@ -2,7 +2,7 @@ require "helper"
 require "fluent/plugin/in_node_exporter_metrics"
 require "fluent/plugin/node_exporter/cpu_collector"
 
-class NodeExporterCpuColectorTest < Test::Unit::TestCase
+class CpuColectorTest < Test::Unit::TestCase
   setup do
     Fluent::Test.setup
   end

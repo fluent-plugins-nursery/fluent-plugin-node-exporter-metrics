@@ -2,7 +2,7 @@ require "helper"
 require "fluent/plugin/in_node_exporter_metrics"
 require "fluent/plugin/node_exporter/vmstat_collector"
 
-class NodeExporterVmstatColectorTest < Test::Unit::TestCase
+class VmstatColectorTest < Test::Unit::TestCase
   sub_test_case "vmstat" do
     def test_empty_metrics
       omit "/proc/vmstat is only available on *nix" if Fluent.windows?
