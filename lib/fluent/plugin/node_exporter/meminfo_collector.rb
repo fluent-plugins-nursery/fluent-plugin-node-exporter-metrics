@@ -15,34 +15,39 @@
 
 require "cmetrics"
 require "fluent/plugin/input"
-require "fluent/plugin/node_exporter_collector"
+require "fluent/plugin/node_exporter/collector"
 
 module Fluent
   module Plugin
     module NodeExporter
-      class TimeMetricsCollector < MetricsCollector
+      class MeminfoMetricsCollector < MetricsCollector
+
         def initialize(config={})
           super(config)
 
-          @gauge = CMetrics::Gauge.new
-          @gauge.create("node", "", "time_seconds",
-                        "System time in seconds since epoch (1970).")
+          @metrics = {}
         end
 
         def run
-          time_update
+          vmstat_update
         end
 
-        def time_update
-          current_time = Fluent::EventTime.now
-          value = current_time.to_i / 1e9
-          @gauge.set(value)
+        def vmstat_update
+          vmstat_path = File.join(@procfs_path, "vmstat")
+          File.readlines(vmstat_path).each do |line|
+            entry, value, _ = line.split
+            if VMSTAT_ENTRIES_REGEX.match?(line)
+              key, value = line.split(' ', 2)
+              @untyped = CMetrics::Untyped.new
+              @untyped.create("node", "vmstat", key, "#{vmstat_path} information field #{key}.")
+              @untyped.set(value.to_f)
+              @metrics[key] = @untyped
+            end
+          end
         end
 
         def cmetrics
-          {
-            time_seconds: @gauge
-          }
+          @metrics
         end
       end
     end

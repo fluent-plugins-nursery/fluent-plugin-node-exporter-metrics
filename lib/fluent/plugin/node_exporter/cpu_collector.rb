@@ -16,7 +16,7 @@
 require "cmetrics"
 require "etc"
 require "fluent/plugin/input"
-require "fluent/plugin/node_exporter_collector"
+require "fluent/plugin/node_exporter/collector"
 
 module Fluent
   module Plugin

@@ -1,6 +1,6 @@
 require "helper"
 require "fluent/plugin/in_node_exporter_metrics"
-require "fluent/plugin/node_exporter_loadavg_collector"
+require "fluent/plugin/node_exporter/loadavg_collector"
 
 class NodeExporterTimeColectorTest < Test::Unit::TestCase
   sub_test_case "loadavg" do

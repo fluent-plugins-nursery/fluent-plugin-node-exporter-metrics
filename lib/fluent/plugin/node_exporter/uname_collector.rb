@@ -14,44 +14,48 @@
 # limitations under the License.
 
 require "cmetrics"
+require "etc"
 require "fluent/plugin/input"
-require "fluent/plugin/node_exporter_collector"
+require "fluent/plugin/node_exporter/collector"
 
 module Fluent
   module Plugin
     module NodeExporter
-      class FilefdMetricsCollector < MetricsCollector
+      class UnameMetricsCollector < MetricsCollector
         def initialize(config={})
           super(config)
 
-          @allocated = CMetrics::Gauge.new
-          @allocated.create("node", "filefd", "allocated", "File descriptor statistics: allocated.")
-
-          @maximum = CMetrics::Gauge.new
-          @maximum.create("node", "filefd", "maximum", "File descriptor statistics: maximum.")
+          @gauge = CMetrics::Gauge.new
+          @gauge.create("node", "uname", "info",
+                        "Labeled system information as provided by the uname system call.",
+                        ["sysname", "release", "version", "machine", "nodename", "domainname"])
         end
 
         def run
-          filefd_update
+          uname_update
         end
 
-        def filefd_update
+        def uname_update
           # Etc.uname returns at least sysname,release,version,machine,nodename
           # but it is not guaranteed to return domainname.
-          file_nr_path = File.join(@procfs_path, "/sys/fs/file-nr")
-          entry = File.read(file_nr_path).split
-          unless entry.size == 3
-            $log.warn("invalid number of field <#{file_nr_path}>: #{entry.size}")
-            return
-          end
-          @allocated.set(entry.first.to_f)
-          @maximum.set(entry.last.to_f)
+          domainname = if Etc.uname.has_key?(:domainname)
+                         Etc.uname[:domainname]
+                       else
+                         "(none)"
+                       end
+          # Use 1 explicitly for default gauge value
+          @gauge.set(1, [
+                       Etc.uname[:sysname],
+                       Etc.uname[:release],
+                       Etc.uname[:version],
+                       Etc.uname[:machine],
+                       Etc.uname[:nodename],
+                       domainname])
         end
 
         def cmetrics
           {
-            filefd_allocated: @allocated,
-            filefd_maximum: @maximum
+            info: @gauge
           }
         end
       end

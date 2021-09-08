@@ -1,6 +1,6 @@
 require "helper"
 require "fluent/plugin/in_node_exporter_metrics"
-require "fluent/plugin/node_exporter_filefd_collector"
+require "fluent/plugin/node_exporter/filefd_collector"
 
 class NodeExporterTimeColectorTest < Test::Unit::TestCase
   sub_test_case "filefd" do

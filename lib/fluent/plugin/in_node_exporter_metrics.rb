@@ -15,7 +15,7 @@
 
 require "cmetrics"
 require "fluent/plugin/input"
-require "fluent/plugin/node_exporter_cpu_collector"
+require "fluent/plugin/node_exporter/cpu_collector"
 
 module Fluent
   module Plugin

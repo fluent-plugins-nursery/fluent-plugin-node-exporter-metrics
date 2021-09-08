@@ -1,6 +1,6 @@
 require "helper"
 require "fluent/plugin/in_node_exporter_metrics"
-require "fluent/plugin/node_exporter_vmstat_collector"
+require "fluent/plugin/node_exporter/vmstat_collector"
 
 class NodeExporterVmstatColectorTest < Test::Unit::TestCase
   sub_test_case "vmstat" do
