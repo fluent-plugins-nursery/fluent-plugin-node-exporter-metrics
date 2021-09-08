@@ -2,7 +2,7 @@ require "helper"
 require "fluent/plugin/in_node_exporter_metrics"
 require "fluent/plugin/node_exporter/uname_collector"
 
-class NodeExporterTimeColectorTest < Test::Unit::TestCase
+class NodeExporterUnameColectorTest < Test::Unit::TestCase
   sub_test_case "info" do
     WITHOUT_DOMAINNAME = {
       sysname: "Linux",

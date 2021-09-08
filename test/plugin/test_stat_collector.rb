@@ -2,7 +2,7 @@ require "helper"
 require "fluent/plugin/in_node_exporter_metrics"
 require "fluent/plugin/node_exporter/stat_collector"
 
-class NodeExporterTimeColectorTest < Test::Unit::TestCase
+class NodeExporterStatColectorTest < Test::Unit::TestCase
   sub_test_case "stat" do
 
     def test_stat

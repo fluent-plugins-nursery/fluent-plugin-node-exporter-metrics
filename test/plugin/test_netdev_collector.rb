@@ -2,7 +2,7 @@ require "helper"
 require "fluent/plugin/in_node_exporter_metrics"
 require "fluent/plugin/node_exporter/netdev_collector"
 
-class NodeExporterTimeColectorTest < Test::Unit::TestCase
+class NodeExporterNetdevColectorTest < Test::Unit::TestCase
   sub_test_case "netdev" do
 
     def parse(input)
