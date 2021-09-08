@@ -14,11 +14,11 @@ def fixture_filesystem_root(collector, test_case, filesystem)
                              collector, test_case, filesystem))
 end
 
-def fixture_sysfs_root(collector, test_case)
+def fixture_sysfs_root(collector, test_case="")
   fixture_filesystem_root(collector, test_case, "sys")
 end
 
-def fixture_procfs_root(collector, test_case)
+def fixture_procfs_root(collector, test_case="")
   fixture_filesystem_root(collector, test_case, "proc")
 end
 
