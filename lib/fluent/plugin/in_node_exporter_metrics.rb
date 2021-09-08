@@ -14,6 +14,8 @@
 # limitations under the License.
 
 require "cmetrics"
+require "fluent/env"
+require "fluent/capability"
 require "fluent/plugin/input"
 require "fluent/plugin/node_exporter/cpu_collector"
 
@@ -63,6 +65,17 @@ module Fluent
           sysfs_path: @sysfs_path
         }
         @collectors << NodeExporter::CpuMetricsCollector.new(config) if @cpu
+
+        if Fluent.linux?
+          if @cpufreq
+            @capability = Fluent::Capability.new(:current_process)
+            unless @capability.have_capability?(:effective, :dac_read_search)
+              raise ConfigError, "Linux capability CAP_DAC_READ_SEARCH must be enabled"
+            end
+          end
+        elsif Fluent.windows?
+          raise ConfigError, "node_exporter_metrics is not supported"
+        end
       end
 
       def start

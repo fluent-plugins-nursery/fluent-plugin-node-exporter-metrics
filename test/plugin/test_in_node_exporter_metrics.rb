@@ -4,6 +4,7 @@ require "fluent/plugin/in_node_exporter_metrics.rb"
 class NodeExporterMetricsInputTest < Test::Unit::TestCase
   setup do
     Fluent::Test.setup
+    @capability = Fluent::Capability.new(:current_process)
   end
 
   teardown do
@@ -13,7 +14,8 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
   CONFIG = config_element("ROOT", "", {
                             "scrape_interval" => 5,
                             "procfs_path" => "/proc",
-                            "sysfs_path" => "/sys"
+                            "sysfs_path" => "/sys",
+                            "cpufreq" => false # assume linux capability is not set by default environment
                           })
 
   DEFAULT_COLLECTORS = CONFIG + config_element("", "", {
@@ -33,18 +35,33 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
 
     def test_default_collectors
       d = create_driver(CONFIG)
-      assert_equal([true] * 11,
-                   [d.instance.cpu,
-                    d.instance.cpufreq,
-                    d.instance.diskstats,
-                    d.instance.filefd,
-                    d.instance.loadavg,
-                    d.instance.meminfo,
-                    d.instance.netdev,
-                    d.instance.stat,
-                    d.instance.time,
-                    d.instance.uname,
-                    d.instance.vmstat])
+      if @capability.have_capability?(:effective, :dac_read_search)
+        assert_equal([true] * 11,
+                     [d.instance.cpu,
+                      d.instance.cpufreq,
+                      d.instance.diskstats,
+                      d.instance.filefd,
+                      d.instance.loadavg,
+                      d.instance.meminfo,
+                      d.instance.netdev,
+                      d.instance.stat,
+                      d.instance.time,
+                      d.instance.uname,
+                      d.instance.vmstat])
+      else
+        assert_equal([true, false, true, true, true, true, true, true, true, true, true],
+                     [d.instance.cpu,
+                      d.instance.cpufreq,
+                      d.instance.diskstats,
+                      d.instance.filefd,
+                      d.instance.loadavg,
+                      d.instance.meminfo,
+                      d.instance.netdev,
+                      d.instance.stat,
+                      d.instance.time,
+                      d.instance.uname,
+                      d.instance.vmstat])
+      end
     end
 
     def test_customizable
@@ -79,6 +96,17 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
                     d.instance.time,
                     d.instance.uname,
                     d.instance.vmstat])
+    end
+  end
+
+  sub_test_case "capability" do
+    def test_no_capability_error
+      unless @capability.have_capability?(:effective, :dac_read_search)
+        assert_raise(Fluent::ConfigError.new("Linux capability CAP_DAC_READ_SEARCH must be enabled")) do
+          d = create_driver(config_element("ROOT", "", {}))
+          d.run
+        end
+      end
     end
   end
 end
