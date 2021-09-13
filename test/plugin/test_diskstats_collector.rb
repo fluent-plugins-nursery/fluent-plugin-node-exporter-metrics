@@ -58,7 +58,7 @@ EOS
       proc_diskstats = <<EOS
  1000       0 nvme0n1 4000 5000 6000 7000 8000 9000 10000 11000 12000 13000 14000 15000 16000 17000 18000 19000 20000 21000
 EOS
-      parse(DUMMY_DISKSTATS) do |collector|
+      parse(proc_diskstats) do |collector|
         names = Fluent::Plugin::NodeExporter::DiskstatsMetricsCollector::METRIC_NAMES.collect { |v| v.intern }
         assert_equal(names, collector.cmetrics.keys)
       end
