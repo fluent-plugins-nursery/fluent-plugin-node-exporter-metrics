@@ -18,6 +18,16 @@ require "fluent/env"
 require "fluent/capability"
 require "fluent/plugin/input"
 require "fluent/plugin/node_exporter/cpu_collector"
+require "fluent/plugin/node_exporter/cpufreq_collector"
+require "fluent/plugin/node_exporter/diskstats_collector"
+require "fluent/plugin/node_exporter/filefd_collector"
+require "fluent/plugin/node_exporter/loadavg_collector"
+require "fluent/plugin/node_exporter/meminfo_collector"
+require "fluent/plugin/node_exporter/netdev_collector"
+require "fluent/plugin/node_exporter/stat_collector"
+require "fluent/plugin/node_exporter/time_collector"
+require "fluent/plugin/node_exporter/uname_collector"
+require "fluent/plugin/node_exporter/vmstat_collector"
 
 module Fluent
   module Plugin
@@ -65,6 +75,15 @@ module Fluent
           sysfs_path: @sysfs_path
         }
         @collectors << NodeExporter::CpuMetricsCollector.new(config) if @cpu
+        @collectors << NodeExporter::DiskstatsMetricsCollector.new(config) if @diskstats
+        @collectors << NodeExporter::FilefdMetricsCollector.new(config) if @filefd
+        @collectors << NodeExporter::LoadavgMetricsCollector.new(config) if @loadavg
+        @collectors << NodeExporter::MeminfoMetricsCollector.new(config) if @loadavg
+        @collectors << NodeExporter::NetdevMetricsCollector.new(config) if @netdev
+        @collectors << NodeExporter::StatMetricsCollector.new(config) if @stat
+        @collectors << NodeExporter::TimeMetricsCollector.new(config) if @time
+        @collectors << NodeExporter::UnameMetricsCollector.new(config) if @uname
+        @collectors << NodeExporter::VmstatMetricsCollector.new(config) if @vmstat
 
         if Fluent.linux?
           if @cpufreq
@@ -72,6 +91,7 @@ module Fluent
             unless @capability.have_capability?(:effective, :dac_read_search)
               raise ConfigError, "Linux capability CAP_DAC_READ_SEARCH must be enabled"
             end
+            @collectors << NodeExporter::CpufreqMetricsCollector.new(config) if @cpufreq
           end
         elsif Fluent.windows?
           raise ConfigError, "node_exporter_metrics is not supported"
