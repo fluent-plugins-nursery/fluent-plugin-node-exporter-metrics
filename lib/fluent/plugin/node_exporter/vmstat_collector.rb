@@ -37,7 +37,6 @@ module Fluent
         def vmstat_update
           vmstat_path = File.join(@procfs_path, "vmstat")
           File.readlines(vmstat_path).each do |line|
-            entry, value, _ = line.split
             if VMSTAT_ENTRIES_REGEX.match?(line)
               key, value = line.split(' ', 2)
               @untyped = CMetrics::Untyped.new
