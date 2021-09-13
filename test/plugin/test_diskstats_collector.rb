@@ -16,6 +16,32 @@ EOS
   end
 
   sub_test_case "diskstats" do
+
+    def test_ignore_devices
+      omit "/proc/diskstats is only available on *nix" if Fluent.windows?
+
+      proc_diskstats = <<EOS
+ 1000       0 ram0 4000 5000 6000 7000 8000 9000 10000 11000 12000 13000 14000 15000 16000 17000 18000 19000 20000 21000
+ 1000       0 loop1 4000 5000 6000 7000 8000 9000 10000 11000 12000 13000 14000 15000 16000 17000 18000 19000 20000 21000
+ 1000       0 fd2 4000 5000 6000 7000 8000 9000 10000 11000 12000 13000 14000 15000 16000 17000 18000 19000 20000 21000
+ 1000       0 hda3 4000 5000 6000 7000 8000 9000 10000 11000 12000 13000 14000 15000 16000 17000 18000 19000 20000 21000
+ 1000       0 sda4 4000 5000 6000 7000 8000 9000 10000 11000 12000 13000 14000 15000 16000 17000 18000 19000 20000 21000
+ 1000       0 vda5 4000 5000 6000 7000 8000 9000 10000 11000 12000 13000 14000 15000 16000 17000 18000 19000 20000 21000
+ 1000       0 xvda6 4000 5000 6000 7000 8000 9000 10000 11000 12000 13000 14000 15000 16000 17000 18000 19000 20000 21000
+ 1000       0 nvme7p1 4000 5000 6000 7000 8000 9000 10000 11000 12000 13000 14000 15000 16000 17000 18000 19000 20000 21000
+EOS
+      stub(Etc).uname { {release: "2.4.20-1-amd64"} }
+      parse(DUMMY_DISKSTATS) do |collector|
+        # all listed devices are ignored
+        assert_true(%w(ram0 loop1 fd2 hda3 sda4 vda5 xvda6 nmve7p1).all? { |v|
+          collector.cmetrics.keys.all? do |key|
+            collector.cmetrics[key].val([v]) == nil
+          end
+        })
+      end
+    end
+
+
     def test_minimum_metrics
       omit "/proc/diskstats is only available on *nix" if Fluent.windows?
 
