@@ -48,7 +48,7 @@ module Fluent
             @gauge = CMetrics::Gauge.new
             @gauge.create("node", "memory", name, "#{name}.")
             @gauge.set(value.to_f)
-            @metrics[metric_name] = @gauge
+            @metrics[metric_name.intern] = @gauge
           end
         end
 

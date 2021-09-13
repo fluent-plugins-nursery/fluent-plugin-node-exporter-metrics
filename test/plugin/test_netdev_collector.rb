@@ -23,10 +23,10 @@ EOS
 
         values = []
         Fluent::Plugin::NodeExporter::NetdevMetricsCollector::RECEIVE_FIELDS.each do |field|
-          values << collector.cmetrics["receive_#{field}_total"].val(["lo"])
+          values << collector.cmetrics["receive_#{field}_total".intern].val(["lo"])
         end
         Fluent::Plugin::NodeExporter::NetdevMetricsCollector::TRANSMIT_FIELDS.each do |field|
-          values << collector.cmetrics["transmit_#{field}_total"].val(["lo"])
+          values << collector.cmetrics["transmit_#{field}_total".intern].val(["lo"])
         end
         assert_equal(expected, values)
       end

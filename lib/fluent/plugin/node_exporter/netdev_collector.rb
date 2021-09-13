@@ -53,14 +53,14 @@ module Fluent
               @counter = CMetrics::Counter.new
               @counter.create("node", "network", metric_name, "Network device statistic #{interface}.", ["device"])
               @counter.set(values[index].to_f, [interface])
-              @metrics[metric_name] = @counter
+              @metrics[metric_name.intern] = @counter
             end
             TRANSMIT_FIELDS.each_with_index do |field, index|
               metric_name = "transmit_#{field}_total"
               @counter = CMetrics::Counter.new
               @counter.create("node", "network", metric_name, "Network device statistic #{interface}.", ["device"])
               @counter.set(values[index + RECEIVE_FIELDS.size].to_f, [interface])
-              @metrics[metric_name] = @counter
+              @metrics[metric_name.intern] = @counter
             end
           end
         end

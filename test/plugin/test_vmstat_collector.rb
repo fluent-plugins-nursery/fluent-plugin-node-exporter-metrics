@@ -40,13 +40,13 @@ EOS
         values = collector.cmetrics.collect do |key, metric|
           {key => metric.val}
         end
-        assert_equal([{"oom_kill" => 0.0},
-                      {"pgpgin" => 1.0},
-                      {"pgpgout" => 2.0},
-                      {"pswpin" => 3.0},
-                      {"pswpout" => 4.0},
-                      {"pgfault" => 5.0},
-                      {"pgmajfault" => 6.0}], values)
+        assert_equal([{oom_kill: 0.0},
+                      {pgpgin: 1.0},
+                      {pgpgout: 2.0},
+                      {pswpin: 3.0},
+                      {pswpout: 4.0},
+                      {pgfault: 5.0},
+                      {pgmajfault: 6.0}], values)
       end
     end
   end

@@ -21,10 +21,10 @@ Inactive(file):     400 kB
 EOS
       parse(proc_meminfo) do |collector|
         assert_equal([102400.0, 204800.0, 307200.0, 409600.0],
-                     [collector.cmetrics["node_memory_Active_anon_bytes"].val,
-                      collector.cmetrics["node_memory_Inactive_anon_bytes"].val,
-                      collector.cmetrics["node_memory_Active_file_bytes"].val,
-                      collector.cmetrics["node_memory_Inactive_file_bytes"].val])
+                     [collector.cmetrics[:node_memory_Active_anon_bytes].val,
+                      collector.cmetrics[:node_memory_Inactive_anon_bytes].val,
+                      collector.cmetrics[:node_memory_Active_file_bytes].val,
+                      collector.cmetrics[:node_memory_Inactive_file_bytes].val])
       end
     end
 
@@ -37,10 +37,10 @@ HugePages_Surp:        400
 EOS
       parse(proc_meminfo) do |collector|
         assert_equal([100, 200, 300, 400],
-                     [collector.cmetrics["node_memory_HugePages_Total"].val,
-                      collector.cmetrics["node_memory_HugePages_Free"].val,
-                      collector.cmetrics["node_memory_HugePages_Rsvd"].val,
-                      collector.cmetrics["node_memory_HugePages_Surp"].val])
+                     [collector.cmetrics[:node_memory_HugePages_Total].val,
+                      collector.cmetrics[:node_memory_HugePages_Free].val,
+                      collector.cmetrics[:node_memory_HugePages_Rsvd].val,
+                      collector.cmetrics[:node_memory_HugePages_Surp].val])
       end
     end
   end

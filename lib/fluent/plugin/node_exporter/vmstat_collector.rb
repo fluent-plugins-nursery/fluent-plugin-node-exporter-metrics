@@ -42,7 +42,7 @@ module Fluent
               @untyped = CMetrics::Untyped.new
               @untyped.create("node", "vmstat", key, "#{vmstat_path} information field #{key}.")
               @untyped.set(value.to_f)
-              @metrics[key] = @untyped
+              @metrics[key.intern] = @untyped
             end
           end
         end
