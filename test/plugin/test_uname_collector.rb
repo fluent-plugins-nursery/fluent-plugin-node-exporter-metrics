@@ -21,20 +21,27 @@ class UnameColectorTest < Test::Unit::TestCase
       domainname: "marion"
     }
 
-    def test_with_domainmame
+    def parse
       collector = Fluent::Plugin::NodeExporter::UnameMetricsCollector.new
-      stub(Etc).uname { WITH_DOMAINNAME }
       collector.run
-      info = collector.cmetrics[:info]
-      assert_equal(1, info.val(WITH_DOMAINNAME.values))
+      yield collector
+    end
+
+    def test_with_domainmame
+      stub(Etc).uname { WITH_DOMAINNAME }
+      parse do |collector|
+        info = collector.cmetrics[:info]
+        assert_equal(1, info.val(WITH_DOMAINNAME.values))
+      end
     end
 
     def test_without_domainmame
-      collector = Fluent::Plugin::NodeExporter::UnameMetricsCollector.new
       stub(Etc).uname { WITHOUT_DOMAINNAME }
-      collector.run
-      info = collector.cmetrics[:info]
-      assert_equal(1, info.val(WITHOUT_DOMAINNAME.values << "(none)"))
+      parse do |collector|
+        collector.run
+        info = collector.cmetrics[:info]
+        assert_equal(1, info.val(WITHOUT_DOMAINNAME.values << "(none)"))
+      end
     end
   end
 end
