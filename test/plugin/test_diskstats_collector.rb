@@ -18,7 +18,7 @@ EOS
   sub_test_case "diskstats" do
 
     def test_ignore_devices
-      omit "/proc/diskstats is only available on *nix" if Fluent.windows?
+      omit "/proc/diskstats is only available on *nix" unless Fluent.linux?
 
       proc_diskstats = <<EOS
  1000       0 ram0 4000 5000 6000 7000 8000 9000 10000 11000 12000 13000 14000 15000 16000 17000 18000 19000 20000 21000
@@ -43,7 +43,7 @@ EOS
 
 
     def test_minimum_metrics
-      omit "/proc/diskstats is only available on *nix" if Fluent.windows?
+      omit "/proc/diskstats is only available on *nix" unless Fluent.linux?
 
       # specify lower version to exclude discard and flush metrics explicitly
       stub(Etc).uname { {release: "2.4.20-1-amd64"} }
@@ -56,7 +56,7 @@ EOS
     end
 
     def test_minimum_values
-      omit "/proc/diskstats is only available on *nix" if Fluent.windows?
+      omit "/proc/diskstats is only available on *nix" unless Fluent.linux?
 
       # specify lower version to exclude discard and flush metrics explicitly
       stub(Etc).uname { {release: "2.4.20-1-amd64"} }
@@ -80,6 +80,8 @@ EOS
     end
 
     def test_extra_fields
+      omit "/proc/diskstats is only available on *nix" unless Fluent.linux?
+
       # non supported extra fields are silently ignored
       proc_diskstats = <<EOS
  1000       0 nvme0n1 4000 5000 6000 7000 8000 9000 10000 11000 12000 13000 14000 15000 16000 17000 18000 19000 20000 21000
@@ -93,6 +95,8 @@ EOS
 
   sub_test_case "discards metrics" do
     def test_with_discards
+      omit "/proc/diskstats is only available on *nix" unless Fluent.linux?
+
       # over 4.18 contains discard metrics
       stub(Etc).uname { {release: "4.18.0-1-amd64"} }
       parse(DUMMY_DISKSTATS) do |collector|
@@ -104,6 +108,8 @@ EOS
     end
 
     def test_without_discards
+      omit "/proc/diskstats is only available on *nix" unless Fluent.linux?
+
       # lower than 4.18 do not contain it
       stub(Etc).uname { {release: "2.4.20-1-amd64"} }
       parse(DUMMY_DISKSTATS) do |collector|
@@ -115,6 +121,8 @@ EOS
     end
 
     def test_discard_values
+      omit "/proc/diskstats is only available on *nix" unless Fluent.linux?
+
       stub(Etc).uname { {release: "4.18.0-1-amd64"} }
       parse(DUMMY_DISKSTATS) do |collector|
         assert_equal([15000.0, 16000.0, 17000.0, 18.0],

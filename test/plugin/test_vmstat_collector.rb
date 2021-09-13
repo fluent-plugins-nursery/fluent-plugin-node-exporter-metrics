@@ -13,7 +13,7 @@ class VmstatColectorTest < Test::Unit::TestCase
     end
 
     def test_empty_metrics
-      omit "/proc/vmstat is only available on *nix" if Fluent.windows?
+      omit "/proc/vmstat is only available on *nix" unless Fluent.linux?
 
       proc_vmstat = <<EOS
 numa_hit 168082746
@@ -25,7 +25,7 @@ EOS
     end
 
     def test_all_metrics
-      omit "/proc/vmstat is only available on *nix" if Fluent.windows?
+      omit "/proc/vmstat is only available on *nix" unless Fluent.linux?
 
       proc_vmstat = <<EOS
 oom_kill 0
