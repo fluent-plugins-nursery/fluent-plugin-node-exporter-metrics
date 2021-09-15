@@ -85,6 +85,10 @@ module Fluent
         @collectors << NodeExporter::UnameMetricsCollector.new(config) if @uname
         @collectors << NodeExporter::VmstatMetricsCollector.new(config) if @vmstat
 
+        if @collectors.empty?
+          raise ConfigError, "all collectors are disabled. Enable at least one collector."
+        end
+
         if Fluent.linux?
           if @cpufreq
             @capability = Fluent::Capability.new(:current_process)

@@ -33,6 +33,16 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
                    [d.instance.scrape_interval, d.instance.procfs_path, d.instance.sysfs_path])
     end
 
+    def test_empty_collectors
+      params = {}
+      %w(cpu cpufreq diskstats filefd loadavg meminfo netdev stat time uname vmstat).each do |collector|
+        params[collector] = false
+      end
+      assert_raise(Fluent::ConfigError.new("all collectors are disabled. Enable at least one collector.")) do
+        create_driver(config_element("ROOT", "", params))
+      end
+    end
+
     def test_default_collectors
       d = create_driver(CONFIG)
       if @capability.have_capability?(:effective, :dac_read_search)
@@ -69,7 +79,7 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
                                                   "scrape_interval" => 10,
                                                   "procfs_path" => "/proc/dummy",
                                                   "sysfs_path" => "/sys/dummy",
-                                                  "cpu" => "false",
+                                                  "cpu" => "true",
                                                   "cpufreq" => "false",
                                                   "diskstats" => "false",
                                                   "filefd" => "false",
@@ -81,7 +91,7 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
                                                   "uname" => "false",
                                                   "vmstat" => "false"
                                                 }))
-      assert_equal([10.0, "/proc/dummy", "/sys/dummy", *[false] * 11],
+      assert_equal([10.0, "/proc/dummy", "/sys/dummy", true, false, false, false, false, false, false, false, false, false, false],
                    [d.instance.scrape_interval,
                     d.instance.procfs_path,
                     d.instance.sysfs_path,
