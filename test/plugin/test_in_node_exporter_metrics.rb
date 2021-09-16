@@ -18,11 +18,19 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
                             "cpufreq" => false # assume linux capability is not set by default environment
                           })
 
+  ALL_COLLECTOR_NAMES = %w(cpu cpufreq diskstats filefd loadavg meminfo netdev stat time uname vmstat)
 
   def create_driver(conf = CONFIG)
     Fluent::Test::Driver::Input.new(Fluent::Plugin::NodeExporterMetricsInput).configure(conf)
   end
 
+  def create_minimum_config_params
+    params = {"scrape_interval" => 1}
+    ALL_COLLECTOR_NAMES.each do |field|
+      params[field] = false
+    end
+    params
+  end
 
   sub_test_case "configure" do
     def test_default_parameters
@@ -131,4 +139,30 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
       end
     end
   end
+
+  sub_test_case "collectors" do
+    sub_test_case "cpu collector" do
+      def test_cpu
+        params = create_minimum_config_params
+        params["cpu"] = true
+        d = create_driver(config_element("ROOT", "", params))
+        d.run(expect_records: 1, timeout: 2)
+        cmetrics = MessagePack.unpack(d.events.first.last["cmetrics"])
+        assert_equal([
+                       2,
+                       {"ns"=>"node", "ss"=>"cpu", "name"=>"seconds_total", "desc"=>"Seconds the CPUs spent in each mode."},
+                       Etc.nprocessors * ["idle", "iowait", "irq", "nice", "softirq", "steal", "system", "user"].size,
+                       {"ns"=>"node", "ss"=>"cpu", "name"=>"guest_seconds_total", "desc"=>"Seconds the CPUs spent in guests (VMs) for each mode."},
+                       Etc.nprocessors * ["nice", "user"].size,
+                     ],
+                     [
+                       cmetrics.size,
+                       cmetrics.first["meta"]["opts"],
+                       cmetrics.first["values"].size,
+                       cmetrics.last["meta"]["opts"],
+                       cmetrics.last["values"].size
+                     ])
+      end
+    end
+
 end
