@@ -18,8 +18,6 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
                             "cpufreq" => false # assume linux capability is not set by default environment
                           })
 
-  DEFAULT_COLLECTORS = CONFIG + config_element("", "", {
-                                               })
 
   def create_driver(conf = CONFIG)
     Fluent::Test::Driver::Input.new(Fluent::Plugin::NodeExporterMetricsInput).configure(conf)
