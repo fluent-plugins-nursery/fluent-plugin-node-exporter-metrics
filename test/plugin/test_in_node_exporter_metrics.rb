@@ -181,4 +181,30 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
                      ])
       end
     end
+
+    sub_test_case "filefd collector" do
+      def test_filefd
+        params = create_minimum_config_params
+        params["filefd"] = true
+        d = create_driver(config_element("ROOT", "", params))
+        d.run(expect_records: 1, timeout: 2)
+        cmetrics = MessagePack.unpack(d.events.first.last["cmetrics"])
+        pp cmetrics
+        assert_equal([
+                       2,
+                       {"ns"=>"node", "ss"=>"filefd", "name"=>"allocated", "desc"=>"File descriptor statistics: allocated."},
+                       1,
+                       {"ns"=>"node", "ss"=>"filefd", "name"=>"maximum", "desc"=>"File descriptor statistics: maximum."},
+                       1
+                     ],
+                     [
+                       cmetrics.size,
+                       cmetrics.first["meta"]["opts"],
+                       cmetrics.first["values"].size,
+                       cmetrics.last["meta"]["opts"],
+                       cmetrics.last["values"].size
+                     ])
+      end
+    end
+
 end
