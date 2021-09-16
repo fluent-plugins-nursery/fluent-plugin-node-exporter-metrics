@@ -105,6 +105,20 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
                     d.instance.uname,
                     d.instance.vmstat])
     end
+
+    sub_test_case "scrape interval" do
+      def test_shorter_interval
+        d = create_driver(config_element("ROOT", "", { "scrape_interval" => 2 , "cpufreq" => false}))
+        d.run(expect_records: 2, timeout: 5)
+        assert_equal(2, d.events.size)
+      end
+
+      def test_longer_interval
+        d = create_driver(config_element("ROOT", "", { "scrape_interval" => 10, "cpufreq" => false}))
+        d.run(expect_records: 1, timeout: 10)
+        assert_equal(1, d.events.size)
+      end
+    end
   end
 
   sub_test_case "capability" do
