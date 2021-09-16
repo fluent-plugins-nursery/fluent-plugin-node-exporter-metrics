@@ -206,5 +206,27 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
       end
     end
 
+    sub_test_case "loadavg collector" do
+      def test_loadavg
+        params = create_minimum_config_params
+        params["loadavg"] = true
+        d = create_driver(config_element("ROOT", "", params))
+        d.run(expect_records: 1, timeout: 2)
+        cmetrics = MessagePack.unpack(d.events.first.last["cmetrics"])
+        assert_equal([
+                       3,
+                       {"ns"=>"node", "ss"=>"", "name"=>"load1", "desc"=>"1m load average."},
+                       {"ns"=>"node", "ss"=>"", "name"=>"load5", "desc"=>"5m load average."},
+                       {"ns"=>"node", "ss"=>"", "name"=>"load15", "desc"=>"15m load average."},
+                     ],
+                     [
+                       cmetrics.size,
+                       cmetrics[0]["meta"]["opts"],
+                       cmetrics[1]["meta"]["opts"],
+                       cmetrics[2]["meta"]["opts"]
+                     ])
+      end
+    end
+
   end
 end
