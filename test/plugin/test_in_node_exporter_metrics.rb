@@ -206,4 +206,5 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
       end
     end
 
+  end
 end
