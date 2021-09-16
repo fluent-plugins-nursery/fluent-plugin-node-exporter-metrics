@@ -228,5 +228,79 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
       end
     end
 
+    sub_test_case "meminfo collector" do
+      def test_meminfo
+        params = create_minimum_config_params
+        params["meminfo"] = true
+        d = create_driver(config_element("ROOT", "", params))
+        d.run(expect_records: 1, timeout: 2)
+        cmetrics = MessagePack.unpack(d.events.first.last["cmetrics"])
+        fields = %w(
+          MemTotal_bytes
+          MemFree_bytes
+          MemAvailable_bytes
+          Buffers_bytes
+          Cached_bytes
+          SwapCached_bytes
+          Active_bytes
+          Inactive_bytes
+          Active_anon_bytes
+          Inactive_anon_bytes
+          Active_file_bytes
+          Inactive_file_bytes
+          Unevictable_bytes
+          Mlocked_bytes
+          SwapTotal_bytes
+          SwapFree_bytes
+          Dirty_bytes
+          Writeback_bytes
+          AnonPages_bytes
+          Mapped_bytes
+          Shmem_bytes
+          KReclaimable_bytes
+          Slab_bytes
+          SReclaimable_bytes
+          SUnreclaim_bytes
+          KernelStack_bytes
+          PageTables_bytes
+          NFS_Unstable_bytes
+          Bounce_bytes
+          WritebackTmp_bytes
+          CommitLimit_bytes
+          Committed_AS_bytes
+          VmallocTotal_bytes
+          VmallocUsed_bytes
+          VmallocChunk_bytes
+          Percpu_bytes
+          HardwareCorrupted_bytes
+          AnonHugePages_bytes
+          ShmemHugePages_bytes
+          ShmemPmdMapped_bytes
+          FileHugePages_bytes
+          FilePmdMapped_bytes
+          HugePages_Total
+          HugePages_Free
+          HugePages_Rsvd
+          HugePages_Surp
+          Hugepagesize_bytes
+          Hugetlb_bytes
+          DirectMap4k_bytes
+          DirectMap2M_bytes
+          DirectMap1G_bytes
+        )
+        opts = []
+        fields.each do |field|
+          opts << {"ns"=>"node", "ss"=>"memory", "name"=>field, "desc"=>"#{field}."}
+        end
+        assert_equal([
+                       fields.size,
+                       opts
+                     ].flatten,
+                     [
+                       cmetrics.size,
+                       cmetrics.collect do |metric| metric["meta"]["opts"] end
+                     ].flatten)
+      end
+    end
   end
 end
