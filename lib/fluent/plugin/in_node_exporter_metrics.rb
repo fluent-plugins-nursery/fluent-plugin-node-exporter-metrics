@@ -78,7 +78,7 @@ module Fluent
         @collectors << NodeExporter::DiskstatsMetricsCollector.new(config) if @diskstats
         @collectors << NodeExporter::FilefdMetricsCollector.new(config) if @filefd
         @collectors << NodeExporter::LoadavgMetricsCollector.new(config) if @loadavg
-        @collectors << NodeExporter::MeminfoMetricsCollector.new(config) if @loadavg
+        @collectors << NodeExporter::MeminfoMetricsCollector.new(config) if @meminfo
         @collectors << NodeExporter::NetdevMetricsCollector.new(config) if @netdev
         @collectors << NodeExporter::StatMetricsCollector.new(config) if @stat
         @collectors << NodeExporter::TimeMetricsCollector.new(config) if @time
