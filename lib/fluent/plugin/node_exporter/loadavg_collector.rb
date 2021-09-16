@@ -31,7 +31,7 @@ module Fluent
           @load5.create("node", "", "load5", "5m load average.")
 
           @load15 = CMetrics::Gauge.new
-          @load15.create("node", "", "load1", "15m load average.")
+          @load15.create("node", "", "load15", "15m load average.")
         end
 
         def run
