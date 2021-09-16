@@ -22,7 +22,7 @@ module Fluent
     module NodeExporter
       class DiskstatsMetricsCollector < MetricsCollector
 
-        IGNORED_DEVICES = /^(ram|loop|fd|(h|s|v|xv)d[a-z]|nvme\\d+n\\d+p)\\d+$/
+        IGNORED_DEVICES = /^(ram|loop|fd|(h|s|v|xv)d[a-z]|nvme\d+n\d+p)\d+$/
         # https://www.kernel.org/doc/Documentation/ABI/testing/procfs-diskstats
         # major number ... time spent flushing
         DISKSTATS_KNOWN_FIELDS = 20
