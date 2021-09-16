@@ -109,21 +109,27 @@ module Fluent
 
       def refresh_watchers
         begin
-          wired_buffer = ""
+          @serde = CMetrics::Serde.new
           @collectors.each do |collector|
-            #wired_buffer = collector.cmetrics.first.to_msgpack
-            collector.cmetrics.each do |cmetric|
-              wired_buffer << cmetric.to_msgpack
+            begin
+              collector.run
+              collector.cmetrics.each do |key, cmetric|
+                @serde.concat(cmetric)
+              end
+            rescue => e
+              $log.error(e.message)
             end
           end
           record = {
-            metrics: wired_buffer
+            cmetrics: @serde.to_msgpack
           }
           es = OneEventStream.new(Fluent::EventTime.now, record)
+          #es = MultiEventStream.new
+          #es.add(time, record)
           router.emit_stream(@tag, es)
-        rescue
-          
         end
+      rescue => e
+        $log.error(e.message)
       end
 
       def shutdown
