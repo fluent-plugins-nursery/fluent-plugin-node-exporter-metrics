@@ -114,7 +114,7 @@ module Fluent
             begin
               collector.run
               collector.cmetrics.each do |key, cmetric|
-                @serde.concat(cmetric)
+                @serde.concat(cmetric) if cmetric
               end
             rescue => e
               $log.error(e.message)
