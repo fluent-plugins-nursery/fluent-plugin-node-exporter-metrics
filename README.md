@@ -30,17 +30,17 @@ $ bundle
 
 There are 11 collectors available.
 
-* [cpu collector](docs/cpu.md)
-* [cpufreq collector](docs/cpufreq.md)
-* [diskstats collector](docs/diskstats.md)
-* [filefd collector](docs/filefd.md)
-* [loadavg collector](docs/loadavg.md)
-* [meminfo collector](docs/meminfo.md)
-* [netdev collector](docs/netdev.md)
-* [stat collector](docs/stat.md)
-* [time collector](docs/time.md)
-* [uname collector](docs/uname.md)
-* [vmstat collector](docs/vmstat.md)
+* [cpu](docs/cpu.md)
+* [cpufreq](docs/cpufreq.md)
+* [diskstats](docs/diskstats.md)
+* [filefd](docs/filefd.md)
+* [loadavg](docs/loadavg.md)
+* [meminfo](docs/meminfo.md)
+* [netdev](docs/netdev.md)
+* [stat](docs/stat.md)
+* [time](docs/time.md)
+* [uname](docs/uname.md)
+* [vmstat](docs/vmstat.md)
 
 ## Configuration
 
