@@ -189,7 +189,6 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
         d = create_driver(config_element("ROOT", "", params))
         d.run(expect_records: 1, timeout: 2)
         cmetrics = MessagePack.unpack(d.events.first.last["cmetrics"])
-        pp cmetrics
         assert_equal([
                        2,
                        {"ns"=>"node", "ss"=>"filefd", "name"=>"allocated", "desc"=>"File descriptor statistics: allocated."},
