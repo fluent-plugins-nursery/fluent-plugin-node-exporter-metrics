@@ -165,4 +165,20 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
       end
     end
 
+    sub_test_case "diskstats collector" do
+      def test_diskstats
+        params = create_minimum_config_params
+        params["diskstats"] = true
+        d = create_driver(config_element("ROOT", "", params))
+        d.run(expect_records: 1, timeout: 2)
+        c = Fluent::Plugin::NodeExporter::DiskstatsMetricsCollector.new
+        cmetrics = MessagePack.unpack(d.events.first.last["cmetrics"])
+        assert_equal([
+                       true,
+                     ],
+                     [
+                       cmetrics.all? { |cmetric| cmetric["values"].size == c.target_devices.size }
+                     ])
+      end
+    end
 end
