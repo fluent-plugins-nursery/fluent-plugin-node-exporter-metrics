@@ -46,7 +46,7 @@ module Fluent
       config_param :tag, :string, default: nil
       desc "Enable cpu collector"
       config_param :cpu, :bool, default: true
-      desc "Enable cpu collector"
+      desc "Enable cpufreq collector"
       config_param :cpufreq, :bool, default: true
       desc "Enable diskstats collector"
       config_param :diskstats, :bool, default: true
