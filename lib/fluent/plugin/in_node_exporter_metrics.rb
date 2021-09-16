@@ -124,8 +124,6 @@ module Fluent
             cmetrics: @serde.to_msgpack
           }
           es = OneEventStream.new(Fluent::EventTime.now, record)
-          #es = MultiEventStream.new
-          #es.add(time, record)
           router.emit_stream(@tag, es)
         end
       rescue => e
