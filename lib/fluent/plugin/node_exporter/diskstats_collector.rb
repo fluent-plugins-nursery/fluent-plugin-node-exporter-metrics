@@ -164,6 +164,18 @@ module Fluent
           Gem::Version.new(Etc.uname[:release].split('-', 2).first) >= Gem::Version.new("5.5.0")
         end
 
+        def target_devices
+          devices = []
+          diskstats_path = File.join(@procfs_path, "diskstats")
+          File.readlines(diskstats_path).each do |line|
+            _, _, device, _ = line.split(' ', DISKSTATS_KNOWN_FIELDS)
+            unless IGNORED_DEVICES.match?(device)
+              devices << device
+            end
+          end
+          devices
+        end
+
         def run
           diskstats_update
         end

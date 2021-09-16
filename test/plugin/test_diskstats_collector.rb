@@ -41,6 +41,27 @@ EOS
       end
     end
 
+    def test_target_devices
+      omit "/proc/diskstats is only available on *nix" unless Fluent.linux?
+
+      proc_diskstats = <<EOS
+ 1000       0 ram0
+ 1000       0 loop1
+ 1000       0 fd2
+ 1000       0 hda3
+ 1000       0 sda4
+ 1000       0 vda5
+ 1000       0 xvda6
+ 1000       0 nvme7n1
+ 1000       0 nvme8n1p1
+ 1000       0 sda
+ 1000       0 vda
+EOS
+      stub(Etc).uname { {release: "2.4.20-1-amd64"} }
+      parse(proc_diskstats) do |collector|
+        assert_equal(["nvme7n1", "sda", "vda"], collector.target_devices)
+      end
+    end
 
     def test_minimum_metrics
       omit "/proc/diskstats is only available on *nix" unless Fluent.linux?
