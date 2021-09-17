@@ -35,6 +35,18 @@ module Fluent
         RECEIVE_FIELDS = %w(bytes packets errs drop fifo frame compressed multicast)
         TRANSMIT_FIELDS = %w(bytes packets errs drop fifo colls carrier compressed)
 
+        def target_devices
+          devices = []
+          netdev_path = File.join(@procfs_path, "net/dev")
+          File.readlines(netdev_path).each_with_index do |line, index|
+            next if index < 2
+            interface, _ = line.split
+            interface.delete!(":")
+            devices << interface
+          end
+          devices
+        end
+
         def netdev_update
           netdev_path = File.join(@procfs_path, "net/dev")
           File.readlines(netdev_path).each_with_index do |line, index|
