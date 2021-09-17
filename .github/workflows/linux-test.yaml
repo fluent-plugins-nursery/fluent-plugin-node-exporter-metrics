@@ -36,7 +36,7 @@ jobs:
           bundle install
       - name: setup linux capability (cap_dac_read_search=+eip)
         run: sudo setcap cap_dac_read_search=+eip $(command -v ruby)
-        if: ${{ matrix.capability }} == true }}
+        if: ${{ matrix.capability }}
       - name: show linux capability (cap_dac_read_search=+eip)
         run: sudo getcap $(command -v ruby)
       - name: Run tests
