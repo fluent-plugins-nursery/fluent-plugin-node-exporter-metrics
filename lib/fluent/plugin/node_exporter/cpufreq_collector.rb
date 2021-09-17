@@ -65,7 +65,9 @@ module Fluent
             scaling_max_freq_path = File.join(path, "cpufreq", "scaling_max_freq")
             scaling_min_freq_path = File.join(path, "cpufreq", "scaling_min_freq")
             cpu_id = File.basename(path).sub(/cpu(\d+)/, "\\1")
-            @frequency_hertz.set(File.read(cpuinfo_cur_freq_path).to_f, [cpu_id])
+            if File.exist?(cpuinfo_cur_freq_path)
+              @frequency_hertz.set(File.read(cpuinfo_cur_freq_path).to_f, [cpu_id])
+            end
             @frequency_max_hertz.set(File.read(cpuinfo_max_freq_path).to_f, [cpu_id])
             @frequency_min_hertz.set(File.read(cpuinfo_min_freq_path).to_f, [cpu_id])
             @scaling_frequency_hertz.set(File.read(scaling_cur_freq_path).to_f, [cpu_id])
