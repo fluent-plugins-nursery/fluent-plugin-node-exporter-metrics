@@ -217,7 +217,7 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
         assert_raise(Fluent::ConfigError.new("Linux capability CAP_DAC_READ_SEARCH must be enabled")) do
           params = create_minimum_config_params
           params["cpufreq"] = true
-          d = create_driver(config_element("ROOT", "", params))
+          create_driver(config_element("ROOT", "", params))
         end
       end
     end
