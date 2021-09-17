@@ -165,6 +165,63 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
       end
     end
 
+    sub_test_case "cpufreq collector" do
+      def test_cpufreq
+        omit "cpufreq collector requires linux capability" unless @capability.have_capability?(:effective, :dac_read_search)
+        params = create_minimum_config_params
+        params["cpufreq"] = true
+        d = create_driver(config_element("ROOT", "", params))
+        d.run(expect_records: 1, timeout: 2)
+        cmetrics = MessagePack.unpack(d.events.first.last["cmetrics"])
+        assert_equal([
+                       6,
+                       {"desc"=>"Current cpu thread frequency in hertz.",
+                        "name"=>"frequency_hertz",
+                        "ns"=>"node",
+                        "ss"=>"cpu"},
+                       {"desc"=>"Maximum cpu thread frequency in hertz.",
+                        "name"=>"frequency_max_hertz",
+                        "ns"=>"node",
+                        "ss"=>"cpu"},
+                       {"desc"=>"Minimum cpu thread frequency in hertz.",
+                        "name"=>"frequency_min_hertz",
+                        "ns"=>"node",
+                        "ss"=>"cpu"},
+                       {"desc"=>"Current scaled CPU thread frequency in hertz.",
+                        "name"=>"scaling_frequency_hertz",
+                        "ns"=>"node",
+                        "ss"=>"cpu"},
+                       {"desc"=>"Maximum scaled CPU thread frequency in hertz.",
+                        "name"=>"scaling_frequency_max_hertz",
+                        "ns"=>"node",
+                        "ss"=>"cpu"},
+                       {"desc"=>"Minimum scaled CPU thread frequency in hertz.",
+                        "name"=>"scaling_frequency_min_hertz",
+                        "ns"=>"node",
+                        "ss"=>"cpu"},
+                       [Etc.nprocessors] * 6
+                     ].flatten,
+                     [
+                       cmetrics.size,
+                       cmetrics.collect do |cmetric|
+                         cmetric["meta"]["opts"]
+                       end,
+                       cmetrics.collect do |cmetric|
+                         cmetric["values"].size
+                       end,
+                     ].flatten)
+      end
+
+      def test_without_capability
+        omit "skip assertion if linux capability is enabled" if @capability.have_capability?(:effective, :dac_read_search)
+        assert_raise(Fluent::ConfigError.new("Linux capability CAP_DAC_READ_SEARCH must be enabled")) do
+          params = create_minimum_config_params
+          params["cpufreq"] = true
+          d = create_driver(config_element("ROOT", "", params))
+        end
+      end
+    end
+
     sub_test_case "diskstats collector" do
       def test_diskstats
         params = create_minimum_config_params
