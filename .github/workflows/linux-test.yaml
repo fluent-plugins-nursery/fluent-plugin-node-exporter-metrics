@@ -20,6 +20,7 @@ jobs:
           - ruby-version: head
             os: ubuntu-latest
             experimental: true
+        capability: [true, false]
 
     name: Unit testing with Ruby ${{ matrix.ruby-version }} on ${{ matrix.os }}
     steps:
@@ -29,6 +30,14 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby-version }}
       - name: Install dependencies
-        run: bundle install
+        run: |
+          sudo apt update
+          sudo apt -V install libcap-ng-dev
+          bundle install
+      - name: setup linux capability (cap_dac_read_search=+eip)
+        run: sudo setcap cap_dac_read_search=+eip $(command -v ruby)
+        if: ${{ matrix.capability }} == true }}
+      - name: show linux capability (cap_dac_read_search=+eip)
+        run: sudo getcap $(command -v ruby)
       - name: Run tests
         run: bundle exec rake test
