@@ -23,9 +23,21 @@ class CpufreqColectorTest < Test::Unit::TestCase
   end
 
   sub_test_case "cpufreq" do
-    def test_frequency
+    data(
+      with: ["with_cur_freq", [
+               2200000.0, 2500000.0, 2000000.0,
+               2300000.0, 2400000.0, 2100000.0,
+               2600000.0, 2900000.0, 2400000.0,
+               2900000.0, 3000000.0, 2700000.0]],
+      without: ["without_cur_freq", [
+                  nil, 2500000.0, 2000000.0,
+                  nil, 2400000.0, 2100000.0,
+                  2600000.0, 2900000.0, 2400000.0,
+                  2900000.0, 3000000.0, 2700000.0]]
+    )
+    test "cpuinfo_cur_frequency" do |(fixture, expected)|
       config = {
-        sysfs_path: fixture_sysfs_root("cpufreq")
+        sysfs_path: fixture_sysfs_root("cpufreq", fixture)
       }
       collector = Fluent::Plugin::NodeExporter::CpufreqMetricsCollector.new(config)
       collector.run
@@ -35,10 +47,7 @@ class CpufreqColectorTest < Test::Unit::TestCase
       scaling_frequency_hertz = collector.cmetrics[:scaling_frequency_hertz]
       scaling_frequency_max_hertz = collector.cmetrics[:scaling_frequency_max_hertz]
       scaling_frequency_min_hertz = collector.cmetrics[:scaling_frequency_min_hertz]
-      assert_equal([2200000.0, 2500000.0, 2000000.0,
-                    2300000.0, 2400000.0, 2100000.0,
-                    2600000.0, 2900000.0, 2400000.0,
-                    2900000.0, 3000000.0, 2700000.0],
+      assert_equal(expected,
                    [frequency_hertz.val(["0"]),
                     frequency_max_hertz.val(["0"]),
                     frequency_min_hertz.val(["0"]),
