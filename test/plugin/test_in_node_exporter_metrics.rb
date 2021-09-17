@@ -337,5 +337,48 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
       end
     end
 
+    sub_test_case "stat collector" do
+      def test_stat
+        params = create_minimum_config_params
+        params["stat"] = true
+        d = create_driver(config_element("ROOT", "", params))
+        d.run(expect_records: 1, timeout: 2)
+        cmetrics = MessagePack.unpack(d.events.first.last["cmetrics"])
+        assert_equal([
+                       6,
+                       {"desc"=>"Total number of interrupts serviced.",
+                        "name"=>"intr_total",
+                        "ns"=>"node",
+                        "ss"=>""},
+                       {"desc"=>"Total number of context switches.",
+                        "name"=>"context_switches_total",
+                        "ns"=>"node",
+                        "ss"=>""},
+                       {"desc"=>"Total number of forks.",
+                        "name"=>"forks_total",
+                        "ns"=>"node",
+                        "ss"=>""},
+                       {"desc"=>"Node boot time, in unixtime.",
+                        "name"=>"boot_time_seconds",
+                        "ns"=>"node",
+                        "ss"=>""},
+                       {"desc"=>"Number of processes in runnable state.",
+                        "name"=>"procs_running",
+                        "ns"=>"node",
+                        "ss"=>""},
+                       {"desc"=>"Number of processes blocked waiting for I/O to complete.",
+                        "name"=>"procs_blocked",
+                        "ns"=>"node",
+                        "ss"=>""},
+                     ],
+                     [
+                       cmetrics.size,
+                       cmetrics.collect do |cmetric|
+                         cmetric["meta"]["opts"]
+                       end,
+                     ].flatten)
+      end
+    end
+
   end
 end
