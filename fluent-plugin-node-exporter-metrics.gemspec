@@ -21,6 +21,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_runtime_dependency "cmetrics", "~> 0.2.2"
+  spec.add_runtime_dependency "capng_c", "~> 0.2.2"
 
   spec.add_development_dependency "bundler", "~> 2.2.24"
   spec.add_development_dependency "rake", "~> 13.0.6"
