@@ -57,7 +57,7 @@ module Fluent
         end
 
         def cpuinfo_cur_freq_exist?
-          path = File.join(@sysfs, "devices/system/cpu/cpu0/cpufreq/cpuinfo_cur_freq")
+          path = File.join(@sysfs_path, "devices/system/cpu/cpu0/cpufreq/cpuinfo_cur_freq")
           File.exist?(path)
         end
 
