@@ -302,5 +302,40 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
                      ].flatten)
       end
     end
+
+    sub_test_case "netdev collector" do
+      def test_netdev
+        params = create_minimum_config_params
+        params["netdev"] = true
+        d = create_driver(config_element("ROOT", "", params))
+        d.run(expect_records: 1, timeout: 2)
+        c = Fluent::Plugin::NodeExporter::NetdevMetricsCollector.new
+        cmetrics = MessagePack.unpack(d.events.first.last["cmetrics"])
+        opts = []
+        Fluent::Plugin::NodeExporter::NetdevMetricsCollector::RECEIVE_FIELDS.each do |field|
+          opts << {"ns"=>"node", "ss"=>"network",
+                   "name"=>"receive_#{field}_total", "desc"=>"Network device statistic receive_#{field}_total."}
+        end
+        Fluent::Plugin::NodeExporter::NetdevMetricsCollector::TRANSMIT_FIELDS.each do |field|
+          opts << {"ns"=>"node", "ss"=>"network",
+                   "name"=>"transmit_#{field}_total", "desc"=>"Network device statistic transmit_#{field}_total."}
+        end
+        assert_equal([
+                       16, # receive 8 + transmit 8 entries
+                       opts,
+                       [c.target_devices.size] * 16
+                     ].flatten,
+                     [
+                       cmetrics.size,
+                       cmetrics.collect do |cmetric|
+                         cmetric["meta"]["opts"]
+                       end,
+                       cmetrics.collect do |cmetric|
+                         cmetric["values"].size
+                       end
+                     ].flatten)
+      end
+    end
+
   end
 end
