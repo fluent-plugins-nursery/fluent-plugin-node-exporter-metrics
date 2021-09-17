@@ -42,6 +42,19 @@ class CpuColectorTest < Test::Unit::TestCase
                     package_throttles_total.val(["0"])
                    ])
     end
+
+    def test_without_cpu_thermal_throttle
+      config = {
+        scpape_interval: 1,
+        procfs_path: fixture_procfs_root("cpu", "without_thermal_throttle"),
+        sysfs_path: fixture_sysfs_root("cpu", "without_thermal_throttle")
+      }
+      collector = Fluent::Plugin::NodeExporter::CpuMetricsCollector.new(config)
+      collector.run
+      core_throttles_total = collector.cmetrics[:core_throttles_total]
+      assert_equal([nil, nil],
+                   [collector.cmetrics[:core_throttles_total],
+                    collector.cmetrics[:package_throttles_total]])
     end
 
     def test_cpu_stat
