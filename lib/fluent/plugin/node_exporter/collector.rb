@@ -27,12 +27,8 @@ module Fluent
         end
 
         def scan_sysfs_path(pattern)
-          Dir.glob(File.join(@sysfs_path, pattern)).sort_by do |a, b|
-            if a and b
-              File.basename(a).delete("a-z").to_i <=> File.basename(b).delete("a-z").to_i
-            else
-              0
-            end
+          Dir.glob(File.join(@sysfs_path, pattern)).sort do |a, b|
+            File.basename(a).delete("a-z").to_i <=> File.basename(b).delete("a-z").to_i
           end
         end
 
