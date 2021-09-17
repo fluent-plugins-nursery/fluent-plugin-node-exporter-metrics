@@ -128,7 +128,41 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
 
   sub_test_case "collectors" do
     sub_test_case "cpu collector" do
-      def test_cpu
+      def test_cpu_with_thermal_throttle
+        omit "thermal throttle requires specific sysfs" unless Dir.exist?("/sys/devices/system/cpu/cpu0/thermal_throttle")
+
+        params = create_minimum_config_params
+        params["cpu"] = true
+        d = create_driver(config_element("ROOT", "", params))
+        d.run(expect_records: 1, timeout: 2)
+        cmetrics = MessagePack.unpack(d.events.first.last["cmetrics"])
+        # FIXME: size of core_throttles_total, package_throttles_total values
+        assert_equal([
+                       4,
+                       {"ns"=>"node", "ss"=>"cpu", "name"=>"seconds_total", "desc"=>"Seconds the CPUs spent in each mode."},
+                       {"ns"=>"node", "ss"=>"cpu", "name"=>"guest_seconds_total", "desc"=>"Seconds the CPUs spent in guests (VMs) for each mode."},
+                       {"ns"=>"node", "ss"=>"cpu", "name"=>"core_throttles_total","desc"=>"Number of times this CPU core has been throttled."},
+                       {"ns"=>"node", "ss"=>"cpu", "name"=>"guest_seconds_total","desc"=>"Seconds the CPUs spent in guests (VMs) for each mode."},
+                       [
+                         Etc.nprocessors * ["idle", "iowait", "irq", "nice", "softirq", "steal", "system", "user"].size,
+                         Etc.nprocessors * ["user", "nice"].size,
+                       ]
+                     ],
+                     [
+                       cmetrics.size,
+                       cmetrics.collect do |metric|
+                         metric["meta"]["opts"]
+                       end,
+                       [
+                         cmetrics[2]["values"].size,
+                         cmetrics[3]["values"].size
+                       ]
+                     ].flatten)
+      end
+
+      def test_cpu_without_thermal_throttle
+        omit "thermal throttle requires specific sysfs" if Dir.exist?("/sys/devices/system/cpu/cpu0/thermal_throttle")
+
         params = create_minimum_config_params
         params["cpu"] = true
         d = create_driver(config_element("ROOT", "", params))
