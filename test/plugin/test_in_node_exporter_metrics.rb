@@ -189,6 +189,11 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
         d = create_driver(config_element("ROOT", "", params))
         d.run(expect_records: 1, timeout: 2)
         cmetrics = MessagePack.unpack(d.events.first.last["cmetrics"])
+        value_counts = if File.exist?("/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_cur_freq")
+                         [Etc.nprocessors] * 6
+                       else
+                         [0, [Etc.nprocessors] * 5].flatten
+                       end
         assert_equal([
                        6,
                        {"desc"=>"Current cpu thread frequency in hertz.",
@@ -215,7 +220,7 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
                         "name"=>"scaling_frequency_min_hertz",
                         "ns"=>"node",
                         "ss"=>"cpu"},
-                       [Etc.nprocessors] * 6
+                       value_counts
                      ].flatten,
                      [
                        cmetrics.size,
