@@ -426,5 +426,51 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
       end
     end
 
+    sub_test_case "vmstat collector" do
+      def test_vmstat
+        params = create_minimum_config_params
+        params["vmstat"] = true
+        d = create_driver(config_element("ROOT", "", params))
+        d.run(expect_records: 1, timeout: 2)
+        cmetrics = MessagePack.unpack(d.events.first.last["cmetrics"])
+        assert_equal([
+                       7,
+                       {"desc"=>"/proc/vmstat information field pgpgin.",
+                        "name"=>"pgpgin",
+                        "ns"=>"node",
+                        "ss"=>"vmstat"},
+                       {"desc"=>"/proc/vmstat information field pgpgout.",
+                        "name"=>"pgpgout",
+                        "ns"=>"node",
+                        "ss"=>"vmstat"},
+                       {"desc"=>"/proc/vmstat information field pswpin.",
+                        "name"=>"pswpin",
+                        "ns"=>"node",
+                        "ss"=>"vmstat"},
+                       {"desc"=>"/proc/vmstat information field pswpout.",
+                        "name"=>"pswpout",
+                        "ns"=>"node",
+                        "ss"=>"vmstat"},
+                       {"desc"=>"/proc/vmstat information field pgfault.",
+                        "name"=>"pgfault",
+                        "ns"=>"node",
+                        "ss"=>"vmstat"},
+                       {"desc"=>"/proc/vmstat information field pgmajfault.",
+                        "name"=>"pgmajfault",
+                        "ns"=>"node",
+                        "ss"=>"vmstat"},
+                       {"desc"=>"/proc/vmstat information field oom_kill.",
+                        "name"=>"oom_kill",
+                        "ns"=>"node",
+                        "ss"=>"vmstat"}
+                     ],
+                     [
+                       cmetrics.size,
+                       cmetrics.collect do |cmetric|
+                         cmetric["meta"]["opts"]
+                       end,
+                     ].flatten)
+      end
+    end
   end
 end
