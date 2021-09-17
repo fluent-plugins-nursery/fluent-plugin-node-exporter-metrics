@@ -403,5 +403,28 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
       end
     end
 
+    sub_test_case "uname collector" do
+      def test_uname
+        params = create_minimum_config_params
+        params["uname"] = true
+        d = create_driver(config_element("ROOT", "", params))
+        d.run(expect_records: 1, timeout: 2)
+        cmetrics = MessagePack.unpack(d.events.first.last["cmetrics"])
+        assert_equal([
+                       1,
+                       {"desc"=>"Labeled system information as provided by the uname system call.",
+                        "name"=>"info",
+                        "ns"=>"node",
+                        "ss"=>"uname"}
+                     ],
+                     [
+                       cmetrics.size,
+                       cmetrics.collect do |cmetric|
+                         cmetric["meta"]["opts"]
+                       end,
+                     ].flatten)
+      end
+    end
+
   end
 end
