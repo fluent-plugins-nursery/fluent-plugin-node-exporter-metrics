@@ -22,7 +22,7 @@ jobs:
             experimental: true
         capability: [true, false]
 
-    name: Unit testing with Ruby ${{ matrix.ruby-version }} on ${{ matrix.os }}
+    name: Ruby ${{ matrix.ruby-version }} capability ${{ matrix.capability }} on ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
       - name: Set up Ruby
