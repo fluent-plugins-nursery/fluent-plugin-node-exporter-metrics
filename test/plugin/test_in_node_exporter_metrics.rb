@@ -49,35 +49,21 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
       end
     end
 
-    def test_default_collectors
-      d = create_driver(CONFIG)
-      if @capability.have_capability?(:effective, :dac_read_search)
-        assert_equal([true] * 11,
-                     [d.instance.cpu,
-                      d.instance.cpufreq,
-                      d.instance.diskstats,
-                      d.instance.filefd,
-                      d.instance.loadavg,
-                      d.instance.meminfo,
-                      d.instance.netdev,
-                      d.instance.stat,
-                      d.instance.time,
-                      d.instance.uname,
-                      d.instance.vmstat])
-      else
-        assert_equal([true, false, true, true, true, true, true, true, true, true, true],
-                     [d.instance.cpu,
-                      d.instance.cpufreq,
-                      d.instance.diskstats,
-                      d.instance.filefd,
-                      d.instance.loadavg,
-                      d.instance.meminfo,
-                      d.instance.netdev,
-                      d.instance.stat,
-                      d.instance.time,
-                      d.instance.uname,
-                      d.instance.vmstat])
-      end
+    def test_default_collectors_with_capability
+      omit "skip assertion when linux capability is not available" unless @capability.have_capability?(:effective, :dac_read_search)
+      d = create_driver(config_element("ROOT", "", {}))
+      assert_equal([true] * 11,
+                   [d.instance.cpu,
+                    d.instance.cpufreq,
+                    d.instance.diskstats,
+                    d.instance.filefd,
+                    d.instance.loadavg,
+                    d.instance.meminfo,
+                    d.instance.netdev,
+                    d.instance.stat,
+                    d.instance.time,
+                    d.instance.uname,
+                    d.instance.vmstat])
     end
 
     def test_customizable
