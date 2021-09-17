@@ -36,7 +36,7 @@ class CpuColectorTest < Test::Unit::TestCase
       # CPU0/1 thermal throttle
       core_throttles_total = collector.cmetrics[:core_throttles_total]
       package_throttles_total = collector.cmetrics[:package_throttles_total]
-      assert_equal([1.0, 2.0, 1.0],
+      assert_equal([1.0, 2.0, 10.0],
                    [core_throttles_total.val(["0", "0"]),
                     core_throttles_total.val(["1", "0"]),
                     package_throttles_total.val(["0"])
