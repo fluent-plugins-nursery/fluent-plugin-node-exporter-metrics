@@ -139,24 +139,20 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
         # FIXME: size of core_throttles_total, package_throttles_total values
         assert_equal([
                        4,
-                       {"ns"=>"node", "ss"=>"cpu", "name"=>"seconds_total", "desc"=>"Seconds the CPUs spent in each mode."},
-                       {"ns"=>"node", "ss"=>"cpu", "name"=>"guest_seconds_total", "desc"=>"Seconds the CPUs spent in guests (VMs) for each mode."},
                        {"ns"=>"node", "ss"=>"cpu", "name"=>"core_throttles_total","desc"=>"Number of times this CPU core has been throttled."},
+                       {"ns"=>"node", "ss"=>"cpu", "name"=>"package_throttles_total", "desc"=>"Number of times this CPU package has been throttled."},
+                       {"ns"=>"node", "ss"=>"cpu", "name"=>"seconds_total", "desc"=>"Seconds the CPUs spent in each mode."},
                        {"ns"=>"node", "ss"=>"cpu", "name"=>"guest_seconds_total","desc"=>"Seconds the CPUs spent in guests (VMs) for each mode."},
-                       [
-                         Etc.nprocessors * ["idle", "iowait", "irq", "nice", "softirq", "steal", "system", "user"].size,
-                         Etc.nprocessors * ["user", "nice"].size,
-                       ]
+                       Etc.nprocessors * ["idle", "iowait", "irq", "nice", "softirq", "steal", "system", "user"].size,
+                       Etc.nprocessors * ["user", "nice"].size,
                      ],
                      [
                        cmetrics.size,
                        cmetrics.collect do |metric|
                          metric["meta"]["opts"]
                        end,
-                       [
-                         cmetrics[2]["values"].size,
-                         cmetrics[3]["values"].size
-                       ]
+                       cmetrics[2]["values"].size,
+                       cmetrics[3]["values"].size
                      ].flatten)
       end
 
