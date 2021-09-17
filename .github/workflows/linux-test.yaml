@@ -37,7 +37,7 @@ jobs:
       - name: setup linux capability (cap_dac_read_search=+eip)
         run: sudo setcap cap_dac_read_search=+eip $(command -v ruby)
         if: ${{ matrix.capability }}
-      - name: show linux capability (cap_dac_read_search=+eip)
+      - name: show linux capability
         run: sudo getcap $(command -v ruby)
       - name: Run tests
         run: bundle exec rake test
