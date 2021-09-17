@@ -25,7 +25,7 @@ module Fluent
         def initialize(config={})
           super(config)
 
-          unless Fluent.windows?
+          if Fluent.linux?
             @frequency_hertz = CMetrics::Gauge.new
             @frequency_hertz.create("node", "cpu", "frequency_hertz",
                                     "Current cpu thread frequency in hertz.", ["cpu"])
