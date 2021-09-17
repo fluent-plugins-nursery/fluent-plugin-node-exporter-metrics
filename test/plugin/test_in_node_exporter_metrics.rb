@@ -381,7 +381,7 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
     end
 
     sub_test_case "time collector" do
-      def test_stat
+      def test_time
         params = create_minimum_config_params
         params["time"] = true
         d = create_driver(config_element("ROOT", "", params))
