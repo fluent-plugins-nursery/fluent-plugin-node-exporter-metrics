@@ -49,6 +49,18 @@ module Fluent
 
         def netdev_update
           netdev_path = File.join(@procfs_path, "net/dev")
+          RECEIVE_FIELDS.each_with_index do |field, index|
+            metric_name = "receive_#{field}_total"
+            @counter = CMetrics::Counter.new
+            @counter.create("node", "network", metric_name, "Network device statistic #{metric_name}.", ["device"])
+            @metrics[metric_name.intern] = @counter
+          end
+          TRANSMIT_FIELDS.each_with_index do |field, index|
+            metric_name = "transmit_#{field}_total"
+            @counter = CMetrics::Counter.new
+            @counter.create("node", "network", metric_name, "Network device statistic #{metric_name}.", ["device"])
+            @metrics[metric_name.intern] = @counter
+          end
           File.readlines(netdev_path).each_with_index do |line, index|
             # net/dev must be 3 columns
             if index == 0 and line.split("|").size != 3
@@ -62,17 +74,11 @@ module Fluent
 
             RECEIVE_FIELDS.each_with_index do |field, index|
               metric_name = "receive_#{field}_total"
-              @counter = CMetrics::Counter.new
-              @counter.create("node", "network", metric_name, "Network device statistic #{interface}.", ["device"])
-              @counter.set(values[index].to_f, [interface])
-              @metrics[metric_name.intern] = @counter
+              @metrics[metric_name.intern].set(values[index].to_f, [interface])
             end
             TRANSMIT_FIELDS.each_with_index do |field, index|
               metric_name = "transmit_#{field}_total"
-              @counter = CMetrics::Counter.new
-              @counter.create("node", "network", metric_name, "Network device statistic #{interface}.", ["device"])
-              @counter.set(values[index + RECEIVE_FIELDS.size].to_f, [interface])
-              @metrics[metric_name.intern] = @counter
+              @metrics[metric_name.intern].set(values[index + RECEIVE_FIELDS.size].to_f, [interface])
             end
           end
         end
