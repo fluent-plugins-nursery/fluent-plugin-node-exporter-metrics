@@ -380,5 +380,28 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
       end
     end
 
+    sub_test_case "time collector" do
+      def test_stat
+        params = create_minimum_config_params
+        params["time"] = true
+        d = create_driver(config_element("ROOT", "", params))
+        d.run(expect_records: 1, timeout: 2)
+        cmetrics = MessagePack.unpack(d.events.first.last["cmetrics"])
+        assert_equal([
+                       1,
+                       {"desc"=>"System time in seconds since epoch (1970).",
+                        "name"=>"time_seconds",
+                        "ns"=>"node",
+                        "ss"=>""}
+                     ],
+                     [
+                       cmetrics.size,
+                       cmetrics.collect do |cmetric|
+                         cmetric["meta"]["opts"]
+                       end,
+                     ].flatten)
+      end
+    end
+
   end
 end
