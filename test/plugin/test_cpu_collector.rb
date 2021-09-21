@@ -51,7 +51,6 @@ class CpuColectorTest < Test::Unit::TestCase
       }
       collector = Fluent::Plugin::NodeExporter::CpuMetricsCollector.new(config)
       collector.run
-      core_throttles_total = collector.cmetrics[:core_throttles_total]
       assert_equal([nil, nil],
                    [collector.cmetrics[:core_throttles_total],
                     collector.cmetrics[:package_throttles_total]])
