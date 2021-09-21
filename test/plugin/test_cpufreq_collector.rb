@@ -30,8 +30,6 @@ class CpufreqColectorTest < Test::Unit::TestCase
   end
 
   sub_test_case "cpufreq" do
-    omit "skip assertion when cpufreq is not available" unless cpufreq_available?
-
     data(
       with: ["with_cur_freq", [
                2200000.0, 2500000.0, 2000000.0,
@@ -45,6 +43,8 @@ class CpufreqColectorTest < Test::Unit::TestCase
                   2900000.0, 3000000.0, 2700000.0]]
     )
     test "cpuinfo_cur_frequency" do |(fixture, expected)|
+      omit "skip assertion when cpufreq is not available" unless cpufreq_available?
+
       config = {
         sysfs_path: fixture_sysfs_root("cpufreq", fixture)
       }
