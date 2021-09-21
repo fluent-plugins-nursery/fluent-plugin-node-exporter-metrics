@@ -14,6 +14,7 @@
 # limitations under the License.
 
 require "cmetrics"
+require "etc"
 require "fluent/env"
 require "fluent/capability"
 require "fluent/plugin/input"
@@ -88,7 +89,7 @@ module Fluent
         if Fluent.linux?
           if @cpufreq
             @capability = Fluent::Capability.new(:current_process)
-            unless @capability.have_capability?(:effective, :dac_read_search)
+            unless Etc.getpwuid.uid != 0 and @capability.have_capability?(:effective, :dac_read_search)
               raise ConfigError, "Linux capability CAP_DAC_READ_SEARCH must be enabled"
             end
             @collectors << NodeExporter::CpufreqMetricsCollector.new(config) if @cpufreq
