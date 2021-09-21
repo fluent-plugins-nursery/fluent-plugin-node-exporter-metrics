@@ -370,9 +370,9 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
         fields.concat(["CmaFree_bytes"]) if meminfo_key_exist?("CmaFree")
         fields.concat(["ShmemHugePages_bytes"]) if meminfo_key_exist?("ShmemHugePages")
         fields.concat(["ShmemPmdMapped_bytes"]) if meminfo_key_exist?("ShmemPmdMapped")
+        fields.concat(["FileHugePages_bytes"]) if meminfo_key_exist?("FileHugePages")
+        fields.concat(["FilePmdMapped_bytes"]) if meminfo_key_exist?("FilePmdMapped")
         fields.concat(%w(
-          FileHugePages_bytes
-          FilePmdMapped_bytes
           HugePages_Total
           HugePages_Free
           HugePages_Rsvd
