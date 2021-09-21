@@ -1,5 +1,7 @@
 # fluent-plugin-node-exporter-metrics
 
+[![CI on GitHub Actions](https://github.com/fluent-plugins-nursery/fluent-plugin-node-exporter-metrics/actions/workflows/linux-test.yaml/badge.svg)](https://github.com/fluent-plugins-nursery/fluent-plugin-node-exporter-metrics/actions/workflows/linux-test.yaml)
+
 [Fluentd](https://fluentd.org/) input plugin to collect metrics which is similar to Fluent-bit's [node_exporter_metrics](https://docs.fluentbit.io/manual/pipeline/inputs/node-exporter-metrics).
 
 
