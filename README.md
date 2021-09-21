@@ -10,6 +10,26 @@ fluent-plugin-node-exporter-metrics provides 2 types of input/parser plugins.
 
 ## Installation
 
+### Prerequisite
+
+As fluent-plugin-node-exporter-metrics depends external libraries,
+you must install dependency libraries in beforehand.
+
+Note that CMake 3.13 or later must be installed.
+
+### CentOS 7/RHEL 7
+
+```
+sudo yum install libcap-ng-devel gcc cmake3
+```
+
+### CentOS 8/RHEL 8
+
+```
+sudo dnf install libcap-ng-devel gcc cmake
+```
+
+
 ### RubyGems
 
 ```
