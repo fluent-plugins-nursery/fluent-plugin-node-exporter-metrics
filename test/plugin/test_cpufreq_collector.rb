@@ -22,7 +22,16 @@ class CpufreqColectorTest < Test::Unit::TestCase
     Fluent::Test::Driver::Input.new(Fluent::Plugin::NodeExporterMetricsInput).configure(conf)
   end
 
+  def cpufreq_available?
+    freq_path = "/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_cur_freq"
+    Dir.exist?("/sys/devices/system/cpu/cpu0/cpufreq") and
+      File.exist?(freq_path) and
+      (File.readable?(freq_path) or @capability.have_capability?(:effective, :dac_read_search))
+  end
+
   sub_test_case "cpufreq" do
+    omit "skip assertion when cpufreq is not available" unless cpufreq_available?
+
     data(
       with: ["with_cur_freq", [
                2200000.0, 2500000.0, 2000000.0,
