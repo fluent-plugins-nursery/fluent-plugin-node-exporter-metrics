@@ -314,6 +314,10 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
     end
 
     sub_test_case "meminfo collector" do
+      def meminfo_key_exist?(key)
+        File.readlines("/proc/meminfo").any? { |v| v.start_with?(key) }
+      end
+
       def test_meminfo
         params = create_minimum_config_params
         params["meminfo"] = true
@@ -343,9 +347,7 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
           Mapped_bytes
           Shmem_bytes
           )
-        if Gem::Version.new(Etc.uname[:release].split("-", 2).first) >= Gem::Version.new("4.20.0")
-          fields.concat(["KReclaimable_bytes"])
-        end
+        fields.concat(["KReclaimable_bytes"]) if meminfo_key_exist?("KReclaimable")
         fields.concat(%w(
           Slab_bytes
           SReclaimable_bytes
@@ -364,9 +366,10 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
           HardwareCorrupted_bytes
           AnonHugePages_bytes
           ))
-        if Gem::Version.new(Etc.uname[:release].split("-", 2).first) >= Gem::Version.new("4.8.0")
-          fields.concat(["ShmemHugePages_bytes", "ShmemPmdMapped_bytes"])
-        end
+        fields.concat(["CmaTotal_bytes"]) if meminfo_key_exist?("CmaTotal")
+        fields.concat(["CmaFree_bytes"]) if meminfo_key_exist?("CmaFree")
+        fields.concat(["ShmemHugePages_bytes"]) if meminfo_key_exist?("ShmemHugePages")
+        fields.concat(["ShmemPmdMapped_bytes"]) if meminfo_key_exist?("ShmemPmdMapped")
         fields.concat(%w(
           FileHugePages_bytes
           FilePmdMapped_bytes
@@ -376,9 +379,7 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
           HugePages_Surp
           Hugepagesize_bytes
         ))
-        if Gem::Version.new(Etc.uname[:release].split("-", 2).first) >= Gem::Version.new("4.4.0")
-          fields.concat(["Hugetlb_bytes"])
-        end
+        fields.concat(["Hugetlb_bytes"]) if meminfo_key_exist?("Hugetlb")
         fields.concat(%w(
           DirectMap4k_bytes
           DirectMap2M_bytes
