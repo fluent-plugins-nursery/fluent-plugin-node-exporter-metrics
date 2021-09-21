@@ -342,7 +342,11 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
           AnonPages_bytes
           Mapped_bytes
           Shmem_bytes
-          KReclaimable_bytes
+          )
+        if Gem::Version.new(Etc.uname[:release].split("-", 2).first) >= Gem::Version.new("4.20.0")
+          fields.concat(["KReclaimable_bytes"])
+        end
+        fields.concat(%w(
           Slab_bytes
           SReclaimable_bytes
           SUnreclaim_bytes
@@ -359,8 +363,11 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
           Percpu_bytes
           HardwareCorrupted_bytes
           AnonHugePages_bytes
-          ShmemHugePages_bytes
-          ShmemPmdMapped_bytes
+          ))
+        if Gem::Version.new(Etc.uname[:release].split("-", 2).first) >= Gem::Version.new("4.8.0")
+          fields.concat(["ShmemHugePages_bytes", "ShmemPmdMapped_bytes"])
+        end
+        fields.concat(%w(
           FileHugePages_bytes
           FilePmdMapped_bytes
           HugePages_Total
@@ -368,11 +375,15 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
           HugePages_Rsvd
           HugePages_Surp
           Hugepagesize_bytes
-          Hugetlb_bytes
+        ))
+        if Gem::Version.new(Etc.uname[:release].split("-", 2).first) >= Gem::Version.new("4.4.0")
+          fields.concat(["Hugetlb_bytes"])
+        end
+        fields.concat(%w(
           DirectMap4k_bytes
           DirectMap2M_bytes
           DirectMap1G_bytes
-        )
+        ))
         opts = []
         fields.each do |field|
           opts << {"ns"=>"node", "ss"=>"memory", "name"=>field, "desc"=>"#{field}."}
