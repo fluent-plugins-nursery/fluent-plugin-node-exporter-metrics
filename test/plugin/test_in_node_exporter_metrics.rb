@@ -32,6 +32,13 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
     params
   end
 
+  def cpufreq_available?
+    freq_path = "/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_cur_freq"
+    Dir.exist?("/sys/devices/system/cpu/cpu0/cpufreq") and
+      File.exist?(freq_path) and
+      (File.readable?(freq_path) or @capability.have_capability?(:effective, :dac_read_search))
+  end
+
   sub_test_case "configure" do
     def test_default_parameters
       d = create_driver(CONFIG)
@@ -183,7 +190,7 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
 
     sub_test_case "cpufreq collector" do
       def test_cpufreq
-        omit "cpufreq collector requires linux capability" unless @capability.have_capability?(:effective, :dac_read_search)
+        omit "cpufreq collector requires linux capability" unless cpufreq_available?
         params = create_minimum_config_params
         params["cpufreq"] = true
         d = create_driver(config_element("ROOT", "", params))
@@ -234,7 +241,7 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
       end
 
       def test_without_capability
-        omit "skip assertion if linux capability is enabled" if @capability.have_capability?(:effective, :dac_read_search)
+        omit "skip assertion if linux capability is enabled" if cpufreq_available?
         assert_raise(Fluent::ConfigError.new("Linux capability CAP_DAC_READ_SEARCH must be enabled")) do
           params = create_minimum_config_params
           params["cpufreq"] = true
