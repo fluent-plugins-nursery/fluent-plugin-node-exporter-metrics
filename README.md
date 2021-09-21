@@ -1,8 +1,6 @@
 # fluent-plugin-node-exporter-metrics
 
-[Fluentd](https://fluentd.org/) input plugin to do something.
-
-TODO: write description for you plugin.
+[Fluentd](https://fluentd.org/) input plugin to collect metrics which is similar to Fluent-bit's [node_exporter_metrics](https://docs.fluentbit.io/manual/pipeline/inputs/node-exporter-metrics).
 
 ## Installation
 
