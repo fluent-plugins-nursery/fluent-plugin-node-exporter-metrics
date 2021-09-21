@@ -2,6 +2,12 @@
 
 [Fluentd](https://fluentd.org/) input plugin to collect metrics which is similar to Fluent-bit's [node_exporter_metrics](https://docs.fluentbit.io/manual/pipeline/inputs/node-exporter-metrics).
 
+
+fluent-plugin-node-exporter-metrics provides 2 types of input/parser plugins.
+
+* node_exporter_metrics (Input plugin)
+* node_exporter_metrics (Parser plugin, for debugging purpose)
+
 ## Installation
 
 ### RubyGems
@@ -24,9 +30,14 @@ And then execute:
 $ bundle
 ```
 
-# Documentation
+## Documentation
+
+### node_exporter_metrics (Input plugin)
 
 11 collectors are available.
+All collector is enabled by default.
+
+See each collector documentation in details.
 
 * [cpu](docs/cpu.md)
 * [cpufreq](docs/cpufreq.md)
@@ -40,7 +51,7 @@ $ bundle
 * [uname](docs/uname.md)
 * [vmstat](docs/vmstat.md)
 
-## Configuration
+#### Configuration
 
 | parameter       | type              | description                                                    | default |
 |-----------------|-------------------|----------------------------------------------------------------|---------|
@@ -60,6 +71,66 @@ $ bundle
 | uname           | bool (optional)   | Enable uname collector                                         | `true`  |
 | vmstat          | bool (optional)   | Enable vmstat collector                                        | `true`  |
 
+Here is the sample configuration.
+
+```
+<source>
+  @type node_exporter_metrics
+  tag node_metrics
+</source>
+```
+
+Event is emitted as `{"cmetrics": <MESSAGEPACK_BINARY_BLOBS>}`.
+
+```
+2021-09-21 10:47:54.255725938 +0900 node_metrics: {"cmetrics":"...."}
+```
+
+### node_exporter_metrics (Parser plugin, for debugging purpose only)
+
+This parser plugin is designed for debugging purpose to check metrics binary blobs.
+
+#### Configuration
+
+No configuration parameters.
+
+Here is the sample configuration to use `@type node_exporter_metrics` in filter section.
+
+```
+<source>
+  @type node_exporter_metrics
+  tag node_metrics
+  cpu false
+  cpufreq false
+  diskstats false
+  filefd false
+  loadavg false
+  meminfo false
+  netdev false
+  stat false
+  time true
+  uname false
+  vmstat false
+</source>
+
+<filter node_metrics>
+  @type parser
+  key_name cmetrics
+  <parse>
+    @type node_exporter_metrics
+  </parse>
+</filter>
+
+<match node_metrics>
+  @type stdout
+</match>
+```
+
+Here is the result.
+
+```
+2021-09-21 10:57:48.015023773 +0900 node_metrics: [{"name":"node_time_seconds","value":1.632189468,"desc":"System time in seconds since epoch (1970).","time":1632189468014812147}]
+```
 
 ## Copyright
 
