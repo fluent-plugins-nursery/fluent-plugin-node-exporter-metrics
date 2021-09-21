@@ -112,11 +112,11 @@ EOS
                   Fluent::Plugin::NodeExporter::DiskstatsMetricsCollector::METRIC_NAMES.collect { |v| v.intern }
                 elsif collector.kernel_version_over4_18?
                   [Fluent::Plugin::NodeExporter::DiskstatsMetricsCollector::METRIC_NAMES -
-                   Fluent::Plugin::NodeExporter::DiskstatsMetricsCollector::FLUSH_METRIC_NAMES].collect { |v| v.intern }
+                   Fluent::Plugin::NodeExporter::DiskstatsMetricsCollector::FLUSH_METRIC_NAMES].flatten.collect { |v| v.intern }
                 else
                   [Fluent::Plugin::NodeExporter::DiskstatsMetricsCollector::METRIC_NAMES -
                    Fluent::Plugin::NodeExporter::DiskstatsMetricsCollector::FLUSH_METRIC_NAMES -
-                   Fluent::Plugin::NodeExporter::DiskstatsMetricsCollector::DISCARD_METRIC_NAMES].collect { |v| v.intern }
+                   Fluent::Plugin::NodeExporter::DiskstatsMetricsCollector::DISCARD_METRIC_NAMES].flatten.collect { |v| v.intern }
                 end
         assert_equal(names, collector.cmetrics.keys)
       end
