@@ -44,10 +44,10 @@ module Fluent
         end
 
         def run
-          loadavg_update
+          stat_update
         end
 
-        def loadavg_update
+        def stat_update
           stat_path = File.join(@procfs_path, "stat")
           File.readlines(stat_path).each do |line|
             entry, value, _ = line.split
