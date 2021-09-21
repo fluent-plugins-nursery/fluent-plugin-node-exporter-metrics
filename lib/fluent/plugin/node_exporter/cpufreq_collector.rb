@@ -73,9 +73,9 @@ module Fluent
             @frequency_hertz.set(File.read(cpuinfo_cur_freq_path).to_f, [cpu_id]) if File.exist?(cpuinfo_cur_freq_path)
             @frequency_max_hertz.set(File.read(cpuinfo_max_freq_path).to_f, [cpu_id]) if File.exist?(cpuinfo_max_freq_path)
             @frequency_min_hertz.set(File.read(cpuinfo_min_freq_path).to_f, [cpu_id]) if File.exist?(cpuinfo_min_freq_path)
-            @scaling_frequency_hertz.set(File.read(scaling_cur_freq_path).to_f, [cpu_id])
-            @scaling_frequency_max_hertz.set(File.read(scaling_max_freq_path).to_f, [cpu_id])
-            @scaling_frequency_min_hertz.set(File.read(scaling_min_freq_path).to_f, [cpu_id])
+            @scaling_frequency_hertz.set(File.read(scaling_cur_freq_path).to_f, [cpu_id]) if File.exist?(scaling_cur_freq_path)
+            @scaling_frequency_max_hertz.set(File.read(scaling_max_freq_path).to_f, [cpu_id]) if File.exist?(scaling_max_freq_path)
+            @scaling_frequency_min_hertz.set(File.read(scaling_min_freq_path).to_f, [cpu_id]) if File.exist?(scaling_min_freq_path)
           end
         end
 
