@@ -51,7 +51,7 @@ There are 11 collectors available.
 | sysfs_path      | string (optional) | Path to file-system to collect system metrics                  | `/sys`  |
 | tag             | string (optional) | Tag string                                                     |         |
 | cpu             | bool (optional)   | Enable cpu collector                                           | `true`  |
-| cpufreq         | bool (optional)   | Enable cpu collector                                           | `true`  |
+| cpufreq         | bool (optional)   | Enable cpufreq collector                                       | `true`  |
 | diskstats       | bool (optional)   | Enable diskstats collector                                     | `true`  |
 | filefd          | bool (optional)   | Enable filefd collector                                        | `true`  |
 | loadavg         | bool (optional)   | Enable loadavg collector                                       | `true`  |
