@@ -19,12 +19,12 @@ Adding dac_read_search done.
 
 ## Metric and label naming
 
-* node_cpu_frequency_hertz
-* node_cpu_frequency_max_hertz
-* node_cpu_frequency_min_hertz
-* node_cpu_scaling_frequency_hertz
-* node_cpu_scaling_frequency_max_hertz
-* node_cpu_scaling_frequency_min_hertz
+* node_cpu_frequency_hertz {"cpu"=>...}
+* node_cpu_frequency_max_hertz {"cpu"=>...}
+* node_cpu_frequency_min_hertz {"cpu"=>...}
+* node_cpu_scaling_frequency_hertz {"cpu"=>...}
+* node_cpu_scaling_frequency_max_hertz {"cpu"=>...}
+* node_cpu_scaling_frequency_min_hertz {"cpu"=>...}
 
 NOTE: node_cpu_frequency_hertz is not available on all platforms.
 

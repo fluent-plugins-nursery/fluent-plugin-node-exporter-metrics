@@ -2,7 +2,8 @@
 
 ## Metric and label naming
 
-* node_uname_info
+* node_uname_info {"sysname"=>..., "release"=>..., "version"=>..., "machine"=>..., "nodename"=>..., "domainname"=>...}
+
 
 ## Metric and its data sources
 

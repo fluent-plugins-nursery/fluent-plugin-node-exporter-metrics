@@ -2,10 +2,11 @@
 
 ## Metric and label naming
 
-* node_cpu_core_throttles_total
-* node_cpu_guest_seconds_total
-* node_cpu_package_throttles_total
-* node_cpu_seconds_total node
+* node_cpu_core_throttles_count
+* node_cpu_core_throttles_total {"core"=>..., "package"=>...}
+* node_cpu_guest_seconds_total {"cpu"=>..., "mode"=>...}
+* node_cpu_package_throttles_total {"package"=>...}
+* node_cpu_seconds_total {"cpu"=>..., "mode"=>...}
 
 ## Metric and its data sources
 
