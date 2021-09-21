@@ -22,13 +22,13 @@ Note that CMake 3.13 or later must be installed.
 ### CentOS 7/RHEL 7
 
 ```
-sudo yum install libcap-ng-devel gcc cmake3
+$ sudo yum install libcap-ng-devel gcc cmake3
 ```
 
 ### CentOS 8/RHEL 8
 
 ```
-sudo dnf install libcap-ng-devel gcc cmake
+$ sudo dnf install libcap-ng-devel gcc cmake
 ```
 
 
@@ -36,6 +36,12 @@ sudo dnf install libcap-ng-devel gcc cmake
 
 ```
 $ gem install fluent-plugin-node-exporter-metrics
+```
+
+Or (If you already using td-agent)
+
+```
+$ sudo td-agent-gem install fluent-plugin-node-exporter-metrics
 ```
 
 ### Bundler
