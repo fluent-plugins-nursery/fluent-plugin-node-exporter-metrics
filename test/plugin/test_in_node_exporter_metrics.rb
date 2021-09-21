@@ -518,37 +518,43 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
         d = create_driver(config_element("ROOT", "", params))
         d.run(expect_records: 1, timeout: 2)
         cmetrics = MessagePack.unpack(d.events.first.last["cmetrics"])
+        expected = [
+          {"desc"=>"/proc/vmstat information field pgpgin.",
+           "name"=>"pgpgin",
+           "ns"=>"node",
+           "ss"=>"vmstat"},
+          {"desc"=>"/proc/vmstat information field pgpgout.",
+           "name"=>"pgpgout",
+           "ns"=>"node",
+           "ss"=>"vmstat"},
+          {"desc"=>"/proc/vmstat information field pswpin.",
+           "name"=>"pswpin",
+           "ns"=>"node",
+           "ss"=>"vmstat"},
+          {"desc"=>"/proc/vmstat information field pswpout.",
+           "name"=>"pswpout",
+           "ns"=>"node",
+           "ss"=>"vmstat"},
+          {"desc"=>"/proc/vmstat information field pgfault.",
+           "name"=>"pgfault",
+           "ns"=>"node",
+           "ss"=>"vmstat"},
+          {"desc"=>"/proc/vmstat information field pgmajfault.",
+           "name"=>"pgmajfault",
+           "ns"=>"node",
+           "ss"=>"vmstat"}
+        ]
+        if Gem::Version.new(Etc.uname[:release].split("-", 2).first) >= Gem::Version.new("4.13.0")
+          # oom_kill counter since kernel 4.13+
+          expected << {"desc"=>"/proc/vmstat information field oom_kill.",
+                       "name"=>"oom_kill",
+                       "ns"=>"node",
+                       "ss"=>"vmstat"}
+        end
         assert_equal([
-                       7,
-                       {"desc"=>"/proc/vmstat information field pgpgin.",
-                        "name"=>"pgpgin",
-                        "ns"=>"node",
-                        "ss"=>"vmstat"},
-                       {"desc"=>"/proc/vmstat information field pgpgout.",
-                        "name"=>"pgpgout",
-                        "ns"=>"node",
-                        "ss"=>"vmstat"},
-                       {"desc"=>"/proc/vmstat information field pswpin.",
-                        "name"=>"pswpin",
-                        "ns"=>"node",
-                        "ss"=>"vmstat"},
-                       {"desc"=>"/proc/vmstat information field pswpout.",
-                        "name"=>"pswpout",
-                        "ns"=>"node",
-                        "ss"=>"vmstat"},
-                       {"desc"=>"/proc/vmstat information field pgfault.",
-                        "name"=>"pgfault",
-                        "ns"=>"node",
-                        "ss"=>"vmstat"},
-                       {"desc"=>"/proc/vmstat information field pgmajfault.",
-                        "name"=>"pgmajfault",
-                        "ns"=>"node",
-                        "ss"=>"vmstat"},
-                       {"desc"=>"/proc/vmstat information field oom_kill.",
-                        "name"=>"oom_kill",
-                        "ns"=>"node",
-                        "ss"=>"vmstat"}
-                     ],
+                       expected.size,
+                       expected
+                     ].flatten,
                      [
                        cmetrics.size,
                        cmetrics.collect do |cmetric|
