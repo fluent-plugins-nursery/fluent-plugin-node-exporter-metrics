@@ -32,11 +32,15 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
     params
   end
 
-  def cpufreq_available?
+  def cpufreq_readable?
     freq_path = "/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_cur_freq"
     Dir.exist?("/sys/devices/system/cpu/cpu0/cpufreq") and
       File.exist?(freq_path) and
-      (File.readable?(freq_path) or @capability.have_capability?(:effective, :dac_read_search))
+      (File.readable?(freq_path) or cpufreq_capability?)
+  end
+
+  def cpufreq_capability?
+    @capability.have_capability?(:effective, :dac_read_search)
   end
 
   sub_test_case "configure" do
@@ -57,7 +61,7 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
     end
 
     def test_default_collectors_with_capability
-      omit "skip assertion when linux capability is not available" unless @capability.have_capability?(:effective, :dac_read_search)
+      omit "skip assertion when linux capability is not available" unless cpufreq_readable?
       d = create_driver(config_element("ROOT", "", {}))
       assert_equal([true] * 11,
                    [d.instance.cpu,
@@ -190,7 +194,7 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
 
     sub_test_case "cpufreq collector" do
       def test_cpufreq
-        omit "cpufreq collector requires linux capability" unless cpufreq_available?
+        omit "cpufreq collector requires linux capability" unless cpufreq_readable?
         params = create_minimum_config_params
         params["cpufreq"] = true
         d = create_driver(config_element("ROOT", "", params))
@@ -241,7 +245,7 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
       end
 
       def test_without_capability
-        omit "skip assertion if linux capability is enabled" if cpufreq_available?
+        omit "skip assertion if linux capability is enabled" if cpufreq_capability?
         assert_raise(Fluent::ConfigError.new("Linux capability CAP_DAC_READ_SEARCH must be enabled")) do
           params = create_minimum_config_params
           params["cpufreq"] = true
