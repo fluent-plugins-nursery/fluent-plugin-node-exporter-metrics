@@ -12,7 +12,9 @@ $ sudo setcap cap_dac_read_search=+eip PATH_TO_RUBY
 If you already installed td-agent, you can use `fluent-cap-ctl`.
 
 ```sh
-$ sudo fluent-cap-ctl --add dac_read_search -f PATH_TO_RUBY
+$ sudo /opt/td-agent/bin/fluent-cap-ctl --add dac_read_search -f /opt/td-agent/bin/ruby 
+Updating dac_read_search done.
+Adding dac_read_search done.
 ```
 
 ## Metric and label naming
