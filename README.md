@@ -68,7 +68,7 @@ All collector is enabled by default.
 See each collector documentation in details.
 
 * [cpu](docs/cpu.md)
-* [cpufreq](docs/cpufreq.md)
+* [cpufreq](docs/cpufreq.md) (requires specific permission to use)
 * [diskstats](docs/diskstats.md)
 * [filefd](docs/filefd.md)
 * [loadavg](docs/loadavg.md)
