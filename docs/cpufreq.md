@@ -23,7 +23,6 @@ $ sudo fluent-cap-ctl --add dac_read_search -f PATH_TO_RUBY
 * node_cpu_scaling_frequency_hertz
 * node_cpu_scaling_frequency_max_hertz
 * node_cpu_scaling_frequency_min_hertz
-* node_time_seconds
 
 NOTE: node_cpu_frequency_hertz is not available on all platforms.
 
