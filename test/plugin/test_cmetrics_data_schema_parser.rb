@@ -29,7 +29,7 @@ class CMetricsDataSchemaParserTest < Test::Unit::TestCase
                        "desc"=>"System time in seconds since epoch (1970).",
                        "name"=>"node_time_seconds",
                        "value"=>1.632131027,
-                       "time"=>@nsecs
+                       "ts"=>@nsecs
                      }
                    ],
                    @parser.parse(objs))
@@ -74,7 +74,7 @@ class CMetricsDataSchemaParserTest < Test::Unit::TestCase
                        "sysname"=>"Linux",
                        "version"=>"#1 SMP Debian"},
                       "name"=>"node_uname_info",
-                      "time"=>@nsecs,
+                      "ts"=>@nsecs,
                       "value"=>1.0}
                    ],
                    @parser.parse(objs))

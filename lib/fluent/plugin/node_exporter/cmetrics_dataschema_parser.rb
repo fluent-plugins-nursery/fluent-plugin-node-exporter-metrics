@@ -64,7 +64,7 @@ module Fluent
               "name" => metric_name,
               "value" => entry["value"],
               "desc" => opts["desc"],
-              "time" => entry["ts"]
+              "ts" => entry["ts"]
             }
             unless metrics["meta"]["labels"].empty?
               params = {}
