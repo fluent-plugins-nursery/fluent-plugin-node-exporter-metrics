@@ -26,7 +26,7 @@ $ bundle
 
 # Documentation
 
-There are 11 collectors available.
+11 collectors are available.
 
 * [cpu](docs/cpu.md)
 * [cpufreq](docs/cpufreq.md)
