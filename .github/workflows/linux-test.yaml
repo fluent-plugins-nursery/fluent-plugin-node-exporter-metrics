@@ -16,7 +16,9 @@ jobs:
           - ruby-version: head
             os: ubuntu-latest
             experimental: true
-        capability: [true, false]
+# FIXME: on GitHub action, when cpufreq is not available by default
+#        capability: [true, false]
+        capability: [false]
 
     name: Ruby ${{ matrix.ruby-version }} capability ${{ matrix.capability }} on ${{ matrix.os }}
     steps:
