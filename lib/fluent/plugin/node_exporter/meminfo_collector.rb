@@ -28,9 +28,9 @@ module Fluent
           @metrics = {}
           meminfo_path = File.join(@procfs_path, "meminfo")
           File.readlines(meminfo_path).each do |line|
-            metric_name, name, value = parse_meminfo_line(line)
+            metric_name, name, _ = parse_meminfo_line(line)
             @gauge = CMetrics::Gauge.new
-            @gauge.create("node", "memory", name, "#{name}.")
+            @gauge.create("node", "memory", name, "Memory information field #{metric_name}.")
             @metrics[metric_name.intern] = @gauge
           end
         end
@@ -55,7 +55,7 @@ module Fluent
         def meminfo_update
           meminfo_path = File.join(@procfs_path, "meminfo")
           File.readlines(meminfo_path).each do |line|
-            metric_name, name, value = parse_meminfo_line(line)
+            metric_name, _, value = parse_meminfo_line(line)
             @metrics[metric_name.intern].set(value.to_f)
           end
         end

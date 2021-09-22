@@ -391,7 +391,7 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
         ))
         opts = []
         fields.each do |field|
-          opts << {"ns"=>"node", "ss"=>"memory", "name"=>field, "desc"=>"#{field}."}
+          opts << {"ns"=>"node", "ss"=>"memory", "name"=>field, "desc"=>"Memory information field node_memory_#{field}."}
         end
         assert_equal([
                        fields.size,
