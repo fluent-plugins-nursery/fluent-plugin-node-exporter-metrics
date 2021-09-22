@@ -28,7 +28,7 @@ module Fluent
               data << to_readable_hash(metric)
             end
           rescue => e
-            raise Fluent::ParserError.new(e.message)
+            raise Fluent::Plugin::Parser::ParserError.new(e.message)
           end
           data.flatten
         end
