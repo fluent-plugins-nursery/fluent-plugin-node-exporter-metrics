@@ -124,6 +124,7 @@ module Fluent
           record = {
             "cmetrics" => serde.to_msgpack
           }
+          serde = nil
           es = OneEventStream.new(Fluent::EventTime.now, record)
           router.emit_stream(@tag, es)
         end
