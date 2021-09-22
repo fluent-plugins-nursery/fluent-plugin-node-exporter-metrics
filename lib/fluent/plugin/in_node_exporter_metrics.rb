@@ -110,19 +110,19 @@ module Fluent
 
       def refresh_watchers
         begin
-          @serde = CMetrics::Serde.new
+          serde = CMetrics::Serde.new
           @collectors.each do |collector|
             begin
               collector.run
               collector.cmetrics.each do |key, cmetric|
-                @serde.concat(cmetric) if cmetric
+                serde.concat(cmetric) if cmetric
               end
             rescue => e
               $log.error(e.message)
             end
           end
           record = {
-            "cmetrics" => @serde.to_msgpack
+            "cmetrics" => serde.to_msgpack
           }
           es = OneEventStream.new(Fluent::EventTime.now, record)
           router.emit_stream(@tag, es)
