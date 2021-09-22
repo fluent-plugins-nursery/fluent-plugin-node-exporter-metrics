@@ -160,6 +160,12 @@ Here is the result.
 2021-09-21 10:57:48.015023773 +0900 node_metrics: [{"name":"node_time_seconds","value":1.632189468,"desc":"System time in seconds since epoch (1970).","ts":1632189468014812147}]
 ```
 
+## FAQ
+
+### Why is error_class=Fluent::ConfigError error="Linux capability CAP_DAC_READ_SEARCH must be enabled" happen?
+
+See [Prerequisite for cpufreq](docs/cpufreq.md#prerequisite) section for enabling cpufreq collector.
+
 ## Copyright
 
 * Copyright(c) 2021- Kentaro Hayashi
