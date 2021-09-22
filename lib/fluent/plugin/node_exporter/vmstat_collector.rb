@@ -31,7 +31,7 @@ module Fluent
           vmstat_path = File.join(@procfs_path, "vmstat")
           File.readlines(vmstat_path).each do |line|
             if VMSTAT_ENTRIES_REGEX.match?(line)
-              key, value = line.split(' ', 2)
+              key, _ = line.split(' ', 2)
               @untyped = CMetrics::Untyped.new
               @untyped.create("node", "vmstat", key, "#{vmstat_path} information field #{key}.")
               @metrics[key.intern] = @untyped
