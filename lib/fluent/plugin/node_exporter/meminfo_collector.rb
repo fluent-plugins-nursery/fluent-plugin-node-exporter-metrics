@@ -26,29 +26,37 @@ module Fluent
           super(config)
 
           @metrics = {}
+          meminfo_path = File.join(@procfs_path, "meminfo")
+          File.readlines(meminfo_path).each do |line|
+            metric_name, name, value = parse_meminfo_line(line)
+            @gauge = CMetrics::Gauge.new
+            @gauge.create("node", "memory", name, "#{name}.")
+            @metrics[metric_name.intern] = @gauge
+          end
         end
 
         def run
           meminfo_update
         end
 
+        def parse_meminfo_line(line)
+          name, value, unit = line.split
+          name.delete!(":")
+          if name.end_with?("(anon)") or name.end_with?("(file)")
+            name.sub!(/\((anon)\)|\((file)\)/, "_\\1\\2")
+          end
+          if unit
+            name << "_bytes"
+            value = value.to_f * 1024
+          end
+          ["node_memory_#{name}", name, value]
+        end
+
         def meminfo_update
           meminfo_path = File.join(@procfs_path, "meminfo")
           File.readlines(meminfo_path).each do |line|
-            name, value, unit = line.split
-            name.delete!(":")
-            if name.end_with?("(anon)") or name.end_with?("(file)")
-              name.sub!(/\((anon)\)|\((file)\)/, "_\\1\\2")
-            end
-            if unit
-              name << "_bytes"
-              value = value.to_f * 1024
-            end
-            metric_name = "node_memory_#{name}"
-            @gauge = CMetrics::Gauge.new
-            @gauge.create("node", "memory", name, "#{name}.")
-            @gauge.set(value.to_f)
-            @metrics[metric_name.intern] = @gauge
+            metric_name, name, value = parse_meminfo_line(line)
+            @metrics[metric_name.intern].set(value.to_f)
           end
         end
 

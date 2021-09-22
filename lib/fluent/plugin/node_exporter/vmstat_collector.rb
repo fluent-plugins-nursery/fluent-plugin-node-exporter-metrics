@@ -28,6 +28,15 @@ module Fluent
           super(config)
 
           @metrics = {}
+          vmstat_path = File.join(@procfs_path, "vmstat")
+          File.readlines(vmstat_path).each do |line|
+            if VMSTAT_ENTRIES_REGEX.match?(line)
+              key, value = line.split(' ', 2)
+              @untyped = CMetrics::Untyped.new
+              @untyped.create("node", "vmstat", key, "#{vmstat_path} information field #{key}.")
+              @metrics[key.intern] = @untyped
+            end
+          end
         end
 
         def run
@@ -39,10 +48,7 @@ module Fluent
           File.readlines(vmstat_path).each do |line|
             if VMSTAT_ENTRIES_REGEX.match?(line)
               key, value = line.split(' ', 2)
-              @untyped = CMetrics::Untyped.new
-              @untyped.create("node", "vmstat", key, "#{vmstat_path} information field #{key}.")
-              @untyped.set(value.to_f)
-              @metrics[key.intern] = @untyped
+              @metrics[key.intern].set(value.to_f)
             end
           end
         end
