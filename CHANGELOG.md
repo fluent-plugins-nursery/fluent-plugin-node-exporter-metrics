@@ -1,3 +1,9 @@
+# 0.2.1
+
+## Release v0.2.1 - 2021/09/28
+
+* Fixed needless instance assignment for diskstats collector
+
 # 0.2.0
 
 ## Release v0.2.0 - 2021/09/22
