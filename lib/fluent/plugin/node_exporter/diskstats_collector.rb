@@ -152,8 +152,6 @@ module Fluent
                                                       "This is the total number of seconds spent by all flush requests.",
                                                       ["device"])
           end
-
-          @metrics = {}
         end
 
         def kernel_version_over4_18?
@@ -240,7 +238,12 @@ module Fluent
                   end
                 end
               end
-              @metrics = {
+            end
+          end
+        end
+
+        def cmetrics
+          metrics = {
                 reads_completed_total: @reads_completed_total,
                 reads_merged_total: @reads_merged_total,
                 read_bytes_total: @read_bytes_total,
@@ -252,27 +255,22 @@ module Fluent
                 io_now: @io_now,
                 io_time_seconds_total: @io_time_seconds_total,
                 io_time_weighted_seconds_total: @io_time_weighted_seconds_total
-              }
-              if kernel_version_over4_18?
-                @metrics.merge!({
-                                  discards_completed_total: @discards_completed_total,
-                                  discards_merged_total: @discards_merged_total,
-                                  discarded_sectors_total: @discarded_sectors_total,
-                                  discard_time_seconds_total: @discard_time_seconds_total
-                               })
-              end
-              if kernel_version_over5_5?
-                @metrics.merge!({
-                                  flush_requests_total: @flush_requests_total,
-                                  flush_requests_time_seconds_total: @flush_requests_time_seconds_total
-                                })
-              end
-            end
+          }
+          if kernel_version_over4_18?
+            metrics.merge!({
+                              discards_completed_total: @discards_completed_total,
+                              discards_merged_total: @discards_merged_total,
+                              discarded_sectors_total: @discarded_sectors_total,
+                              discard_time_seconds_total: @discard_time_seconds_total
+                            })
           end
-        end
-
-        def cmetrics
-          @metrics
+          if kernel_version_over5_5?
+            metrics.merge!({
+                              flush_requests_total: @flush_requests_total,
+                              flush_requests_time_seconds_total: @flush_requests_time_seconds_total
+                            })
+          end
+          metrics
         end
       end
     end
