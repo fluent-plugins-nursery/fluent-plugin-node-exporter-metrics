@@ -9,7 +9,7 @@ class TimeColectorTest < Test::Unit::TestCase
       stub(Fluent::EventTime).now { Fluent::EventTime.new(1e9) }
       collector.run
       time_seconds = collector.cmetrics[:time_seconds]
-      assert_equal(1.0, time_seconds.val)
+      assert_equal(1_000_000_000, time_seconds.val)
     end
   end
 end
