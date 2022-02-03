@@ -35,7 +35,7 @@ module Fluent
 
         def time_update
           current_time = Fluent::EventTime.now
-          value = current_time.to_i / 1e9
+          value = current_time.to_i
           @gauge.set(value)
         end
 
