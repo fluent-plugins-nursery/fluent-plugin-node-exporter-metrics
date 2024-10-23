@@ -1,3 +1,11 @@
+# 0.2.2
+
+## Release v0.2.2 - 2024/10/23
+
+* Fixed "time" to produce collect Unix time
+* meminfo: Added missing meminfo entries
+* Updated dependency to cmetrics 0.3.x
+
 # 0.2.1
 
 ## Release v0.2.1 - 2021/09/28
