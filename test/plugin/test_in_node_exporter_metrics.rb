@@ -344,20 +344,29 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
           Unevictable_bytes
           Mlocked_bytes
           SwapTotal_bytes
-          SwapFree_bytes
+          SwapFree_bytes)
+        if meminfo_key_exist?("Zswap")
+          fields.concat(%w(
+            Zswap_bytes
+            Zswapped_bytes
+          ))
+        end
+        fields.concat(%w(
           Dirty_bytes
           Writeback_bytes
           AnonPages_bytes
           Mapped_bytes
           Shmem_bytes
-          )
+          ))
         fields.concat(["KReclaimable_bytes"]) if meminfo_key_exist?("KReclaimable")
         fields.concat(%w(
           Slab_bytes
           SReclaimable_bytes
           SUnreclaim_bytes
           KernelStack_bytes
-          PageTables_bytes
+          PageTables_bytes))
+        fields.concat(["SecPageTables_bytes"]) if meminfo_key_exist?("SecPageTables")
+        fields.concat(%w(
           NFS_Unstable_bytes
           Bounce_bytes
           WritebackTmp_bytes
@@ -376,6 +385,7 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
         fields.concat(["ShmemPmdMapped_bytes"]) if meminfo_key_exist?("ShmemPmdMapped")
         fields.concat(["FileHugePages_bytes"]) if meminfo_key_exist?("FileHugePages")
         fields.concat(["FilePmdMapped_bytes"]) if meminfo_key_exist?("FilePmdMapped")
+        fields.concat(["Unaccepted_bytes"]) if meminfo_key_exist?("Unaccepted")
         fields.concat(%w(
           HugePages_Total
           HugePages_Free
