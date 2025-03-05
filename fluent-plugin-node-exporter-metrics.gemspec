@@ -23,7 +23,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "cmetrics", "~> 0.3.3"
   spec.add_runtime_dependency "capng_c", "~> 0.2.2"
 
-  spec.add_development_dependency "bundler", "~> 2.2.0"
+  spec.add_development_dependency "bundler"
   spec.add_development_dependency "rake", "~> 13.0.6"
   spec.add_development_dependency "test-unit", "~> 3.4.4"
   spec.add_development_dependency "test-unit-rr", "~> 1.0.5"
