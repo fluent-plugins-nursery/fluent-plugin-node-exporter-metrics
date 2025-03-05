@@ -5,13 +5,21 @@
 If ruby binary is executed with non-root user, linux capability
 must be enabled for cpufreq collector.
 
-```sh
+```console
 $ sudo setcap cap_dac_read_search=+eip PATH_TO_RUBY
 ```
 
-If you already installed td-agent, you can use `fluent-cap-ctl`.
+If you already installed fluent-package, you can use `fluent-cap-ctl`.
 
-```sh
+```console
+$ sudo /opt/fluent/bin/fluent-cap-ctl --add dac_read_search -f /opt/fluent/bin/ruby 
+Updating dac_read_search done.
+Adding dac_read_search done.
+```
+
+td-agent (EOL):
+
+```console
 $ sudo /opt/td-agent/bin/fluent-cap-ctl --add dac_read_search -f /opt/td-agent/bin/ruby 
 Updating dac_read_search done.
 Adding dac_read_search done.
