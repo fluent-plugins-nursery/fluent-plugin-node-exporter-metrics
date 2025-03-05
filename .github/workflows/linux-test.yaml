@@ -31,8 +31,7 @@ jobs:
         run: |
           sudo apt update
           sudo apt -V install libcap-ng-dev
-          gem install bundler -v 2.2.27
-          bundle _2.2.27_ install
+          bundle install
       - name: setup linux capability (cap_dac_read_search=+eip)
         run: sudo setcap cap_dac_read_search=+eip $(command -v ruby)
         if: ${{ matrix.capability }}
