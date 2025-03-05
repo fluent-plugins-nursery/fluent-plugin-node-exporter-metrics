@@ -23,6 +23,9 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "cmetrics", "~> 0.3.3"
   spec.add_runtime_dependency "capng_c", "~> 0.2.2"
 
+  # gems that aren't default gems as of Ruby 3.5
+  spec.add_runtime_dependency "ostruct", "~> 0.6"
+
   spec.add_development_dependency "bundler"
   spec.add_development_dependency "rake", "~> 13.0.6"
   spec.add_development_dependency "test-unit", "~> 3.4.4"
