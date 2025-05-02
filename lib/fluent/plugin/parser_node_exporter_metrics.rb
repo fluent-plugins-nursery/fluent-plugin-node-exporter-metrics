@@ -16,7 +16,7 @@
 require "fluent/plugin/parser"
 require "fluent/msgpack_factory"
 
-require "fluent/plugin/node_exporter/cmetrics_dataschema_parser"
+require "fluent/plugin/node_exporter/cmetrics/dataschema_parser"
 
 module Fluent
   module Plugin
