@@ -1,32 +1,39 @@
 name: Testing on Ubuntu
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '0 0 1 * *'
 
 jobs:
+  ruby-versions:
+    uses: ruby/actions/.github/workflows/ruby_versions.yml@master
+    with:
+      engine: cruby
+      min_version: 3.1
   test:
+    needs: ruby-versions
     runs-on: ${{ matrix.os }}
-    continue-on-error: ${{ matrix.experimental }}
+    continue-on-error: ${{ matrix.ruby == 'head' }}
     strategy:
       fail-fast: false
       matrix:
-        ruby-version: ['3.4', '3.3', '3.2', '3.1']
+        ruby: ${{ fromJson(needs.ruby-versions.outputs.versions) }}
         os: [ubuntu-latest]
-        experimental: [false]
-        include:
-          - ruby-version: head
-            os: ubuntu-latest
-            experimental: true
 # FIXME: on GitHub action, when cpufreq is not available by default
 #        capability: [true, false]
         capability: [false]
 
-    name: Ruby ${{ matrix.ruby-version }} capability ${{ matrix.capability }} on ${{ matrix.os }}
+    name: Ruby ${{ matrix.ruby }} capability ${{ matrix.capability }} on ${{ matrix.os }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Set up Ruby
         uses: ruby/setup-ruby@09a7688d3b55cf0e976497ff046b70949eeaccfd # v1.288.0
         with:
-          ruby-version: ${{ matrix.ruby-version }}
+          ruby-version: ${{ matrix.ruby }}
       - name: Install dependencies
         run: |
           sudo apt update
