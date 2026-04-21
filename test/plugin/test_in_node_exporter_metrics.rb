@@ -379,13 +379,14 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
           HardwareCorrupted_bytes
           AnonHugePages_bytes
           ))
-        fields.concat(["CmaTotal_bytes"]) if meminfo_key_exist?("CmaTotal")
-        fields.concat(["CmaFree_bytes"]) if meminfo_key_exist?("CmaFree")
         fields.concat(["ShmemHugePages_bytes"]) if meminfo_key_exist?("ShmemHugePages")
         fields.concat(["ShmemPmdMapped_bytes"]) if meminfo_key_exist?("ShmemPmdMapped")
         fields.concat(["FileHugePages_bytes"]) if meminfo_key_exist?("FileHugePages")
         fields.concat(["FilePmdMapped_bytes"]) if meminfo_key_exist?("FilePmdMapped")
+        fields.concat(["CmaTotal_bytes"]) if meminfo_key_exist?("CmaTotal")
+        fields.concat(["CmaFree_bytes"]) if meminfo_key_exist?("CmaFree")
         fields.concat(["Unaccepted_bytes"]) if meminfo_key_exist?("Unaccepted")
+        fields.concat(["Balloon_bytes"]) if meminfo_key_exist?("Balloon")
         fields.concat(%w(
           HugePages_Total
           HugePages_Free
