@@ -1,5 +1,5 @@
 require "helper"
-require "fluent/plugin/node_exporter/cmetrics_dataschema_parser"
+require "fluent/plugin/node_exporter/cmetrics/dataschema_parser"
 
 class CMetricsDataSchemaParserTest < Test::Unit::TestCase
 

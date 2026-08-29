@@ -67,6 +67,8 @@ module Fluent
       config_param :uname, :bool, default: true
       desc "Enable vmstat collector"
       config_param :vmstat, :bool, default: true
+      desc "Use specific backend to keep metrics in it"
+      config_param :backend, :enum, list: [:cmetrics, :prometheus], default: :cmetrics
 
       def configure(conf)
         super
