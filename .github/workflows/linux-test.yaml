@@ -35,6 +35,8 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
       - name: Install dependencies
+        env:
+          CMAKE_POLICY_VERSION_MINIMUM: '3.5'
         run: |
           sudo apt update
           sudo apt -V install libcap-ng-dev
