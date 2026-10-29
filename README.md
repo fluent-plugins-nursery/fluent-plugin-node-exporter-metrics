@@ -167,6 +167,16 @@ Here is the result.
 
 See [Prerequisite for cpufreq](docs/cpufreq.md#prerequisite) section for enabling cpufreq collector.
 
+### Why does the installation fail with "Compatibility with CMake < 3.5 has been removed from CMake"?
+
+The cmetrics gem builds its bundled C library with CMake, and CMake 4.0 or later rejects its old minimum version. Set the `CMAKE_POLICY_VERSION_MINIMUM` environment variable to `3.5` when you install the plugin.
+
+```
+$ CMAKE_POLICY_VERSION_MINIMUM=3.5 gem install fluent-plugin-node-exporter-metrics
+```
+
+If you use Bundler, set it for `bundle install` in the same way.
+
 ## Copyright
 
 * Copyright(c) 2021- Kentaro Hayashi
