@@ -387,6 +387,8 @@ class NodeExporterMetricsInputTest < Test::Unit::TestCase
         fields.concat(["CmaFree_bytes"]) if meminfo_key_exist?("CmaFree")
         fields.concat(["Unaccepted_bytes"]) if meminfo_key_exist?("Unaccepted")
         fields.concat(["Balloon_bytes"]) if meminfo_key_exist?("Balloon")
+        fields.concat(["GPUActive_bytes"]) if meminfo_key_exist?("GPUActive")
+        fields.concat(["GPUReclaim_bytes"]) if meminfo_key_exist?("GPUReclaim")
         fields.concat(%w(
           HugePages_Total
           HugePages_Free
